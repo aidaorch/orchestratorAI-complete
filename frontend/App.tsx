@@ -10,17 +10,18 @@ import AgentLibraryPage from './components/AgentLibraryPage';
 import LearningDashboard from './components/LearningDashboard';
 import ExecutionMonitor from './components/ExecutionMonitor';
 import ProfilePage from './components/ProfilePage';
+import AdminPage from './components/AdminPage';
 import { saveTemplate } from './services/templateService';
 import { savePrompt, saveWorkflowToHistory } from './services/dbService';
 import { recordWorkflowFeedback } from './services/aiService';
 import {
   Sparkles, Play, Loader2, AlertCircle, Check, Edit3, Save,
   FileText, X, BarChart2, Bot, Brain, PlusSquare, Undo2, Redo2,
-  MessageSquare, ChevronRight, History, Zap, UserCircle
+  MessageSquare, ChevronRight, History, Zap, UserCircle, Shield
 } from 'lucide-react';
 
 // ---- Sidebar nav items ----
-type NavItem = 'prompt' | 'workflow' | 'analytics' | 'templates' | 'agents' | 'learning' | 'execution' | 'profile';
+type NavItem = 'prompt' | 'workflow' | 'analytics' | 'templates' | 'agents' | 'learning' | 'execution' | 'profile' | 'admin';
 const NAV: { id: NavItem; label: string; icon: React.ReactNode }[] = [
   { id: 'prompt', label: 'Prompt', icon: <MessageSquare className="w-5 h-5" /> },
   { id: 'workflow', label: 'Workflow', icon: <Zap className="w-5 h-5" /> },
@@ -37,14 +38,16 @@ interface HistoryEntry { steps: WorkflowStep[] }
 const App: React.FC = () => {
   // Auth
   const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem('access_token'));
+  const [isAdmin, setIsAdmin] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('user') || '{}').is_admin === true; } catch { return false; }
+  });
 
   // Listen for forced logout from apiClient (expired/invalid token)
   useEffect(() => {
     const handleAuthLogout = () => setIsLoggedIn(false);
     window.addEventListener('auth:logout', handleAuthLogout);
     return () => window.removeEventListener('auth:logout', handleAuthLogout);
-  }, []);
-  // Navigation
+  }, []);  // Navigation
   const [activeNav, setActiveNav] = useState<NavItem>('prompt');
   // Prompt
   const [prompt, setPrompt] = useState('');
@@ -290,7 +293,10 @@ const App: React.FC = () => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // ---- Render ----
-  if (!isLoggedIn) return <LoginScreen onLogin={() => setIsLoggedIn(true)} />;
+  if (!isLoggedIn) return <LoginScreen onLogin={() => {
+    setIsLoggedIn(true);
+    try { setIsAdmin(JSON.parse(localStorage.getItem('user') || '{}').is_admin === true); } catch { setIsAdmin(false); }
+  }} />;
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
@@ -365,6 +371,16 @@ const App: React.FC = () => {
             <UserCircle className="w-5 h-5 text-indigo-400" />
             Profile
           </button>
+          {/* Admin button — only visible to admins */}
+          {isAdmin && (
+            <button
+              onClick={() => { setActiveNav('admin'); setMobileNavOpen(false); }}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${activeNav === 'admin' ? 'bg-amber-500/20 text-amber-200' : 'text-amber-400 hover:bg-amber-500/10 hover:text-amber-300'}`}
+            >
+              <Shield className="w-5 h-5 text-amber-400" />
+              Admin Panel
+            </button>
+          )}
           <button
             onClick={() => {
               localStorage.removeItem('access_token');
@@ -625,6 +641,9 @@ const App: React.FC = () => {
               }}
             />
           )}
+
+          {/* ===== ADMIN page ===== */}
+          {activeNav === 'admin' && isAdmin && <AdminPage />}
         </div>
       </main>
 

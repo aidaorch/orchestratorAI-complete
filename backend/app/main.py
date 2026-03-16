@@ -7,7 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from contextlib import asynccontextmanager
 from .config import settings
 from .database import init_db
-from .api import auth, workflow, template
+from .api import auth, workflow, template, admin
 from .core.exceptions import (
     WorkflowNotFoundException,
     TemplateNotFoundException,
@@ -111,6 +111,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 app.include_router(auth.router, prefix=f"{settings.API_V1_PREFIX}/auth", tags=["Authentication"])
 app.include_router(workflow.router, prefix=f"{settings.API_V1_PREFIX}/workflow", tags=["Workflows"])
 app.include_router(template.router, prefix=f"{settings.API_V1_PREFIX}/template", tags=["Templates"])
+app.include_router(admin.router, prefix=f"{settings.API_V1_PREFIX}/admin", tags=["Admin"])
 
 
 # ── Root & Health ─────────────────────────────────────────────────────────────

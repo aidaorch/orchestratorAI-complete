@@ -23,6 +23,7 @@ class UserResponse(BaseModel):
     email: str
     full_name: Optional[str]
     is_active: bool
+    is_admin: bool
     created_at: datetime
     last_login: Optional[datetime] = None
 
