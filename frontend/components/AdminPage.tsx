@@ -2,11 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Users, Zap, FileText, Activity, Search, Trash2, ShieldCheck,
   ShieldOff, UserCheck, UserX, RefreshCw, ChevronLeft, ChevronRight,
-  Key, AlertCircle, CheckCircle2, Loader2, BarChart2, Shield
+  Key, AlertCircle, CheckCircle2, Loader2, BarChart2, Shield, Code2
 } from 'lucide-react';
 import { adminService, AdminStats, AdminUser, AdminWorkflow, AdminTemplate } from '../services/adminService';
 
-type AdminTab = 'overview' | 'users' | 'workflows' | 'templates';
+type AdminTab = 'overview' | 'users' | 'workflows' | 'templates' | 'apidocs';
 
 const fmt = (d: string | null) =>
   d ? new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
@@ -476,6 +476,7 @@ const AdminPage: React.FC = () => {
     { id: 'users', label: 'Users', icon: <Users className="w-4 h-4" /> },
     { id: 'workflows', label: 'Workflows', icon: <Zap className="w-4 h-4" /> },
     { id: 'templates', label: 'Templates', icon: <FileText className="w-4 h-4" /> },
+    { id: 'apidocs', label: 'API Docs', icon: <Code2 className="w-4 h-4" /> },
   ];
 
   return (
@@ -512,6 +513,27 @@ const AdminPage: React.FC = () => {
         {tab === 'users' && <UsersTab onToast={showToast} />}
         {tab === 'workflows' && <WorkflowsTab onToast={showToast} />}
         {tab === 'templates' && <TemplatesTab onToast={showToast} />}
+        {tab === 'apidocs' && (
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden" style={{ height: 'calc(100vh - 220px)' }}>
+            <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border-b border-slate-200">
+              <Code2 className="w-4 h-4 text-indigo-500" />
+              <span className="text-sm font-medium text-slate-700">Swagger UI — Interactive API Documentation</span>
+              <a
+                href="/api/v1/docs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-auto text-xs text-indigo-600 hover:underline"
+              >
+                Open in new tab ↗
+              </a>
+            </div>
+            <iframe
+              src="/api/v1/docs"
+              title="Swagger API Docs"
+              className="w-full h-full border-0"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

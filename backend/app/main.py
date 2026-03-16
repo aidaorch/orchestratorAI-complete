@@ -33,10 +33,10 @@ async def lifespan(app: FastAPI):
     yield
 
 
-# Disable docs in production
-_docs_url = f"{settings.API_V1_PREFIX}/docs" if settings.ENVIRONMENT != "production" else None
-_redoc_url = f"{settings.API_V1_PREFIX}/redoc" if settings.ENVIRONMENT != "production" else None
-_openapi_url = f"{settings.API_V1_PREFIX}/openapi.json" if settings.ENVIRONMENT != "production" else None
+# Docs always enabled — access is gated by admin auth in the frontend
+_docs_url = f"{settings.API_V1_PREFIX}/docs"
+_redoc_url = f"{settings.API_V1_PREFIX}/redoc"
+_openapi_url = f"{settings.API_V1_PREFIX}/openapi.json"
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
