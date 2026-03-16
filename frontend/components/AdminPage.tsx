@@ -519,7 +519,7 @@ const AdminPage: React.FC = () => {
               <Code2 className="w-4 h-4 text-indigo-500" />
               <span className="text-sm font-medium text-slate-700">Swagger UI — Interactive API Documentation</span>
               <a
-                href="/api/v1/docs"
+                href="/api/docs"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="ml-auto text-xs text-indigo-600 hover:underline"
@@ -528,7 +528,7 @@ const AdminPage: React.FC = () => {
               </a>
             </div>
             <iframe
-              src="/api/v1/docs"
+              src="/api/docs"
               title="Swagger API Docs"
               className="w-full h-full border-0"
             />
