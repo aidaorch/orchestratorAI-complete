@@ -115,26 +115,27 @@ const ExecutionMonitor: React.FC<ExecutionMonitorProps> = ({ workflow, onUpdateW
     const runningCount = Object.values(logs).filter((l: StepLog) => l.status === 'running').length;
 
     return (
-        <div className="p-6 max-w-5xl mx-auto">
+        <div className="p-4 sm:p-6 max-w-5xl mx-auto">
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-900">Execution Monitor</h2>
+                    <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Execution Monitor</h2>
                     <p className="text-slate-500 mt-1 text-sm">Simulate and monitor workflow execution step-by-step.</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                     <button
                         onClick={onOpenTemplates}
-                        className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors"
+                        className="flex items-center gap-2 px-3 sm:px-4 py-2 border border-slate-300 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors"
                     >
                         <FileText className="w-4 h-4" />
-                        Switch Workflow
+                        <span className="hidden sm:inline">Switch Workflow</span>
+                        <span className="sm:hidden">Switch</span>
                     </button>
                     {!isRunning ? (
                         <button
                             onClick={handleStart}
                             disabled={safeSteps.length === 0}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-emerald-200 transition-all disabled:opacity-50"
+                            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-emerald-200 transition-all disabled:opacity-50"
                         >
                             <Play className="w-4 h-4" />
                             Run Workflow
@@ -142,7 +143,7 @@ const ExecutionMonitor: React.FC<ExecutionMonitorProps> = ({ workflow, onUpdateW
                     ) : (
                         <button
                             onClick={() => setIsRunning(false)}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-red-600 text-white rounded-xl font-medium hover:shadow-lg transition-all"
+                            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-red-600 text-white rounded-xl font-medium hover:shadow-lg transition-all"
                         >
                             <Square className="w-4 h-4" />
                             Stop
@@ -295,7 +296,7 @@ const ExecutionMonitor: React.FC<ExecutionMonitorProps> = ({ workflow, onUpdateW
                     );
                 })}
             </div>
-        </div>
+    </div>
     );
 };
 

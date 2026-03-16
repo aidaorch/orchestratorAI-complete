@@ -42,7 +42,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ data }) => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       {/* Summary row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 max-w-4xl mx-auto">
         {[

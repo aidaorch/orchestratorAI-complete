@@ -286,13 +286,29 @@ const App: React.FC = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // Mobile nav open state
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
   // ---- Render ----
   if (!isLoggedIn) return <LoginScreen onLogin={() => setIsLoggedIn(true)} />;
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
+      {/* ---- Mobile nav overlay ---- */}
+      {mobileNavOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          onClick={() => setMobileNavOpen(false)}
+        />
+      )}
+
       {/* ---- Sidebar ---- */}
-      <aside className="w-56 shrink-0 bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 text-white flex flex-col shadow-xl z-20">
+      <aside className={`
+        fixed lg:relative inset-y-0 left-0 z-40
+        w-56 shrink-0 bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 text-white flex flex-col shadow-xl
+        transition-transform duration-300
+        ${mobileNavOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
         {/* Logo */}
         <div className="px-5 py-5 border-b border-white/10">
           <div className="flex items-center gap-3">
@@ -313,6 +329,7 @@ const App: React.FC = () => {
               key={item.id}
               onClick={() => {
                 setActiveNav(item.id);
+                setMobileNavOpen(false);
                 if (item.id === 'templates' && !workflow) setShowTemplateModal(true);
               }}
               disabled={item.id !== 'prompt' && item.id !== 'templates' && item.id !== 'agents' && item.id !== 'learning' && !workflow}
@@ -334,7 +351,7 @@ const App: React.FC = () => {
         {/* New Workflow & Logout at bottom */}
         <div className="px-3 pb-4 space-y-2 border-t border-white/10 pt-3">
           <button
-            onClick={handleNewWorkflow}
+            onClick={() => { handleNewWorkflow(); setMobileNavOpen(false); }}
             className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-indigo-200 hover:bg-white/10 hover:text-white transition-all"
           >
             <PlusSquare className="w-5 h-5 text-indigo-400" />
@@ -342,7 +359,7 @@ const App: React.FC = () => {
           </button>
           {/* Profile button */}
           <button
-            onClick={() => setActiveNav('profile')}
+            onClick={() => { setActiveNav('profile'); setMobileNavOpen(false); }}
             className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${activeNav === 'profile' ? 'bg-white/15 text-white' : 'text-indigo-200 hover:bg-white/10 hover:text-white'}`}
           >
             <UserCircle className="w-5 h-5 text-indigo-400" />
@@ -364,14 +381,25 @@ const App: React.FC = () => {
       </aside>
 
       {/* ---- Main Content ---- */}
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* ---- Top bar ---- */}
-        <header className="shrink-0 bg-white border-b border-slate-200 px-6 py-3 flex items-center gap-3">
+        <header className="shrink-0 bg-white border-b border-slate-200 px-3 sm:px-6 py-3 flex items-center gap-2 sm:gap-3">
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMobileNavOpen(o => !o)}
+            className="lg:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition-colors shrink-0"
+            aria-label="Open navigation"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+
           <div className="flex-1 min-w-0">
             {workflow ? (
               <h1 className="font-bold text-slate-800 text-sm truncate">
                 {workflow.workflow_metadata.workflow_name}
-                <span className="ml-2 text-xs font-normal text-slate-400">
+                <span className="ml-2 text-xs font-normal text-slate-400 hidden sm:inline">
                   v{workflow.workflow_metadata.version} · {workflow.steps?.length || 0} step{(workflow.steps?.length || 0) !== 1 ? 's' : ''}
                 </span>
               </h1>
@@ -382,7 +410,7 @@ const App: React.FC = () => {
 
           {/* Toolbar for workflow view */}
           {workflow && activeNav === 'workflow' && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               {/* Undo/Redo */}
               <button
                 onClick={undo} disabled={historyIdx <= 0}
@@ -395,21 +423,21 @@ const App: React.FC = () => {
                 className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 disabled:opacity-30 transition-colors"
               ><Redo2 className="w-4 h-4" /></button>
 
-              <div className="w-px h-5 bg-slate-200" />
+              <div className="w-px h-5 bg-slate-200 hidden sm:block" />
 
               {/* Edit mode toggle */}
               <button
                 onClick={() => setEditMode(e => !e)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${editMode ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${editMode ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
               >
                 <Edit3 className="w-4 h-4" />
-                {editMode ? 'Editing' : 'Edit'}
+                <span className="hidden sm:inline">{editMode ? 'Editing' : 'Edit'}</span>
               </button>
 
-              {/* Copy JSON */}
+              {/* Copy JSON — hidden on small screens */}
               <button
                 onClick={handleCopy}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 text-sm font-medium transition-all"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 text-sm font-medium transition-all"
               >
                 {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <History className="w-4 h-4" />}
                 {copied ? 'Copied!' : 'Copy JSON'}
@@ -418,16 +446,16 @@ const App: React.FC = () => {
               {/* Save as Template */}
               <button
                 onClick={() => setShowSaveTemplate(s => !s)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 hover:bg-emerald-200 text-sm font-medium transition-all"
+                className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 hover:bg-emerald-200 text-sm font-medium transition-all"
               >
                 <Save className="w-4 h-4" />
-                Save Template
+                <span className="hidden sm:inline">Save Template</span>
               </button>
 
-              {/* Template Library */}
+              {/* Template Library — hidden on small screens */}
               <button
                 onClick={() => setShowTemplateModal(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 text-sm font-medium transition-all"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 text-sm font-medium transition-all"
               >
                 <FileText className="w-4 h-4" />
                 Templates
@@ -438,32 +466,36 @@ const App: React.FC = () => {
 
         {/* ---- Save Template inline panel ---- */}
         {showSaveTemplate && workflow && (
-          <div className="shrink-0 bg-emerald-50 border-b border-emerald-200 px-6 py-3 flex items-center gap-3">
-            <Save className="w-4 h-4 text-emerald-600 shrink-0" />
-            <input
-              type="text"
-              value={templateName}
-              onChange={e => setTemplateName(e.target.value)}
-              placeholder="Template name*"
-              className="px-3 py-1.5 border border-emerald-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 w-48"
-            />
-            <input
-              type="text"
-              value={templateDesc}
-              onChange={e => setTemplateDesc(e.target.value)}
-              placeholder="Description (optional)"
-              className="flex-1 px-3 py-1.5 border border-emerald-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500"
-            />
-            <button
-              onClick={handleSaveTemplate}
-              disabled={!templateName.trim() || templateSaved}
-              className="px-4 py-1.5 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 disabled:opacity-50 transition-colors flex items-center gap-1.5"
-            >
-              {templateSaved ? <><Check className="w-4 h-4" /> Saved!</> : 'Save'}
-            </button>
-            <button onClick={() => setShowSaveTemplate(false)} className="p-1 text-slate-400 hover:text-slate-700">
-              <X className="w-4 h-4" />
-            </button>
+          <div className="shrink-0 bg-emerald-50 border-b border-emerald-200 px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2">
+              <Save className="w-4 h-4 text-emerald-600 shrink-0" />
+              <input
+                type="text"
+                value={templateName}
+                onChange={e => setTemplateName(e.target.value)}
+                placeholder="Template name*"
+                className="px-3 py-1.5 border border-emerald-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 flex-1 sm:w-48"
+              />
+            </div>
+            <div className="flex items-center gap-2 flex-1">
+              <input
+                type="text"
+                value={templateDesc}
+                onChange={e => setTemplateDesc(e.target.value)}
+                placeholder="Description (optional)"
+                className="flex-1 px-3 py-1.5 border border-emerald-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500"
+              />
+              <button
+                onClick={handleSaveTemplate}
+                disabled={!templateName.trim() || templateSaved}
+                className="px-4 py-1.5 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 disabled:opacity-50 transition-colors flex items-center gap-1.5 shrink-0"
+              >
+                {templateSaved ? <><Check className="w-4 h-4" /> Saved!</> : 'Save'}
+              </button>
+              <button onClick={() => setShowSaveTemplate(false)} className="p-1 text-slate-400 hover:text-slate-700 shrink-0">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         )}
 
@@ -474,23 +506,23 @@ const App: React.FC = () => {
           {activeNav === 'prompt' && (
             <div className="h-full flex flex-col">
               {/* Prompt input area */}
-              <div className="shrink-0 p-6 bg-white border-b border-slate-200">
-                <h2 className="text-lg font-bold text-slate-800 mb-4">Describe your business use case</h2>
+              <div className="shrink-0 p-4 sm:p-6 bg-white border-b border-slate-200">
+                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-3 sm:mb-4">Describe your business use case</h2>
                 <textarea
                   value={prompt}
                   onChange={e => setPrompt(e.target.value)}
-                  rows={5}
+                  rows={4}
                   disabled={isLoading}
                   placeholder="e.g. Generate and distribute a weekly content marketing campaign — research trending topics, create blog posts, design social graphics, schedule posts, and track engagement analytics..."
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl resize-none text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   onKeyDown={e => { if (e.key === 'Enter' && e.ctrlKey) handleGenerate(); }}
                 />
-                <div className="flex items-center justify-between mt-3">
-                  <p className="text-xs text-slate-400">Ctrl+Enter to generate · GPT-4o</p>
-                  <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-3">
+                  <p className="text-xs text-slate-400 hidden sm:block">Ctrl+Enter to generate · GPT-4o</p>
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <button
                       onClick={handleNewWorkflow}
-                      className="flex items-center gap-2 px-4 py-2.5 border-2 border-indigo-300 text-indigo-600 rounded-xl font-medium hover:bg-indigo-50 transition-all text-sm"
+                      className="flex items-center justify-center gap-2 px-4 py-2.5 border-2 border-indigo-300 text-indigo-600 rounded-xl font-medium hover:bg-indigo-50 transition-all text-sm"
                     >
                       <PlusSquare className="w-4 h-4" />
                       New Blank Workflow
@@ -498,7 +530,7 @@ const App: React.FC = () => {
                     <button
                       onClick={handleGenerate}
                       disabled={!prompt.trim() || isLoading}
-                      className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-indigo-200 transition-all disabled:opacity-60 text-sm"
+                      className="flex items-center justify-center gap-2 px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-indigo-200 transition-all disabled:opacity-60 text-sm"
                     >
                       {isLoading ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating…</> : <><Sparkles className="w-4 h-4" /> Generate Workflow</>}
                     </button>

@@ -277,15 +277,15 @@ const StepDetailsModal = ({
 }) => {
   const ac = getAC(step.agent_type);
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 sm:p-12 transition-all">
+    <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-6 transition-all">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal Box */}
-      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-5xl h-[80vh] min-h-[500px] flex flex-col md:flex-row overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+      <div className="relative bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-5xl h-[92vh] sm:max-h-[85vh] flex flex-col md:flex-row overflow-hidden animate-in fade-in zoom-in-95 duration-300">
 
         {/* Left: Step Details */}
-        <div className="w-full md:w-1/2 bg-white flex flex-col border-r border-slate-100 h-full">
+        <div className="w-full md:w-1/2 bg-white flex flex-col border-b md:border-b-0 md:border-r border-slate-100 h-1/2 md:h-full">
           <div className="p-6 border-b border-slate-100 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${ac.badge} bg-opacity-20`}>
@@ -349,7 +349,7 @@ const StepDetailsModal = ({
         </div>
 
         {/* Right: AI Chat */}
-        <div className="w-full md:w-1/2 flex flex-col bg-slate-50/80 h-full relative">
+        <div className="w-full md:w-1/2 flex flex-col bg-slate-50/80 h-1/2 md:h-full relative">
           <button onClick={onClose} className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-white border border-slate-200 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 hover:border-red-200 shadow-sm transition-all">
             <X className="w-4 h-4" />
           </button>
