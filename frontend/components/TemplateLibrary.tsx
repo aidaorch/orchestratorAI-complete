@@ -216,9 +216,9 @@ export const TemplateLibrary: React.FC<TemplateLibraryProps> = ({
             </div>
 
             {/* Body */}
-            <div className="flex-1 overflow-hidden flex">
+            <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
                 {/* Template list */}
-                <div className={`${inline ? 'w-full md:w-1/3' : 'w-1/3'} border-r border-slate-200 overflow-y-auto p-3 space-y-2`}>
+                <div className={`${selected ? 'hidden md:block' : 'block'} w-full md:w-1/3 border-b md:border-b-0 md:border-r border-slate-200 overflow-y-auto p-3 space-y-2 md:max-h-full max-h-64`}>
                     {filtered.length === 0 ? (
                         <div className="text-center py-10 text-slate-400">
                             <FileText className="w-10 h-10 mx-auto mb-2 opacity-30" />
@@ -263,9 +263,16 @@ export const TemplateLibrary: React.FC<TemplateLibraryProps> = ({
                 </div>
 
                 {/* Template detail / preview */}
-                <div className="flex-1 overflow-y-auto p-5">
+                <div className={`${selected ? 'block' : 'hidden md:flex'} flex-1 overflow-y-auto p-4 sm:p-5`}>
                     {selected ? (
                         <div className="space-y-4">
+                            {/* Mobile back button */}
+                            <button
+                                onClick={() => setSelected(null)}
+                                className="md:hidden flex items-center gap-1.5 text-sm text-indigo-600 font-medium mb-2"
+                            >
+                                ← Back to list
+                            </button>
                             {selectedLoading && (
                                 <div className="flex items-center gap-2 text-sm text-slate-400 py-2">
                                     <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>

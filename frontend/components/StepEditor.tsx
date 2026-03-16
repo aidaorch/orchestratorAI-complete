@@ -357,7 +357,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                     {/* Input Logic */}
                     <div>
                         <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Input Type (SRS FR-SC-02)</label>
-                        <div className="grid grid-cols-3 gap-2 mb-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
                             {([['prompt', '💬 Prompt'], ['script', '📜 Script'], ['prior_output', '🔗 Prior Output']] as [string, string][]).map(([val, label]) => (
                                 <button type="button"
                                     key={val}

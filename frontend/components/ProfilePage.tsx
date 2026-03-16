@@ -168,7 +168,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
 
     return (
         <div className="h-full overflow-auto bg-slate-50">
-            <div className="max-w-3xl mx-auto px-6 py-8">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
                 {/* ── Hero card ── */}
                 <div className="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 rounded-2xl p-6 mb-6 shadow-xl shadow-indigo-200">
@@ -217,14 +217,16 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
                         <button
                             key={tab.id}
                             onClick={() => setSection(tab.id)}
-                            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${section === tab.id
+                            className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${section === tab.id
                                 ? tab.id === 'danger'
                                     ? 'bg-red-50 text-red-600 shadow-sm'
                                     : 'bg-indigo-50 text-indigo-700 shadow-sm'
                                 : 'text-slate-500 hover:text-slate-700'
                                 }`}
                         >
-                            {tab.icon}{tab.label}
+                            {tab.icon}
+                            <span className="hidden sm:inline">{tab.label}</span>
+                            <span className="sm:hidden">{tab.id === 'overview' ? 'Info' : tab.id === 'security' ? 'Security' : 'Danger'}</span>
                         </button>
                     ))}
                 </div>

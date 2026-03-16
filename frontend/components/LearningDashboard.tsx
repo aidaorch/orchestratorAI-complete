@@ -32,9 +32,9 @@ const LearningDashboard: React.FC = () => {
     }, 0);
 
     return (
-        <div className="p-6 max-w-5xl mx-auto">
+        <div className="p-4 sm:p-6 max-w-5xl mx-auto">
             <div className="mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">Learning Dashboard</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Learning Dashboard</h2>
                 <p className="text-slate-500 mt-1 text-sm">The system learns from your edits and adapts future workflow generations to your preferences. (SRS FR-LM-06)</p>
             </div>
 
