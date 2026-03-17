@@ -56,6 +56,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   // Workflow
   const [workflow, setWorkflow] = useState<WorkflowResult | null>(null);
+  const [originalWorkflow, setOriginalWorkflow] = useState<WorkflowResult | null>(null);
   const [editMode, setEditMode] = useState(false);
   // Undo/Redo
   const [history, setHistory] = useState<HistoryEntry[]>([]);
@@ -155,6 +156,7 @@ const App: React.FC = () => {
       // generateWorkflow is async (useCase, provider) directly
       const result = await generateWorkflow(prompt, provider);
       setWorkflow(result);
+      setOriginalWorkflow(result);
       saveWorkflowToHistory(prompt, result);
       setHistory([{ steps: result.steps }]);
       setHistoryIdx(0);
@@ -270,7 +272,7 @@ const App: React.FC = () => {
       };
       await saveTemplate(workflowWithPrompt, templateName, templateDesc);
       if (prompt.trim()) {
-        recordWorkflowFeedback(prompt, workflow, workflow).catch(console.error);
+        recordWorkflowFeedback(prompt, originalWorkflow ?? workflow, workflow).catch(console.error);
       }
       setTemplateSaved(true);
       setTimeout(() => {
