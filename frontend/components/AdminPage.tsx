@@ -2,11 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Users, Zap, FileText, Activity, Search, Trash2, ShieldCheck,
   ShieldOff, UserCheck, UserX, RefreshCw, ChevronLeft, ChevronRight,
-  Key, AlertCircle, CheckCircle2, Loader2, BarChart2, Shield, Code2
+  Key, AlertCircle, CheckCircle2, Loader2, BarChart2, Shield, Code2,
+  ClipboardList, Terminal
 } from 'lucide-react';
-import { adminService, AdminStats, AdminUser, AdminWorkflow, AdminTemplate } from '../services/adminService';
+import { adminService, AdminStats, AdminUser, AdminWorkflow, AdminTemplate, AuditLogEntry } from '../services/adminService';
 
-type AdminTab = 'overview' | 'users' | 'workflows' | 'templates' | 'apidocs';
+type AdminTab = 'overview' | 'users' | 'workflows' | 'templates' | 'auditlogs' | 'serverlogs' | 'apidocs';
 
 const fmt = (d: string | null) =>
   d ? new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
@@ -453,6 +454,161 @@ const TemplatesTab: React.FC<{ onToast: (msg: { type: 'ok' | 'err'; text: string
 };
 
 // ── Main AdminPage ────────────────────────────────────────────────────────────
+// ── Audit Logs Tab ────────────────────────────────────────────────────────────
+const AuditLogsTab: React.FC = () => {
+  const [logs, setLogs] = useState<AuditLogEntry[]>([]);
+  const [total, setTotal] = useState(0);
+  const [pages, setPages] = useState(1);
+  const [page, setPage] = useState(1);
+  const [actionFilter, setActionFilter] = useState('');
+  const [userFilter, setUserFilter] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const load = useCallback((p: number) => {
+    setLoading(true);
+    adminService.getAuditLogs(p, actionFilter, userFilter)
+      .then(r => { setLogs(r.logs); setTotal(r.total); setPages(r.pages); setPage(p); })
+      .finally(() => setLoading(false));
+  }, [actionFilter, userFilter]);
+
+  useEffect(() => { load(1); }, [load]);
+
+  const statusColor = (s: string) =>
+    s === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+
+  const actionColor = (a: string) => {
+    if (a.includes('DELETE')) return 'bg-red-50 text-red-700';
+    if (a.includes('FAIL')) return 'bg-orange-50 text-orange-700';
+    if (a === 'LOGIN') return 'bg-blue-50 text-blue-700';
+    return 'bg-slate-100 text-slate-600';
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-3">
+        <div className="relative flex-1 min-w-[160px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <input value={userFilter} onChange={e => setUserFilter(e.target.value)}
+            placeholder="Filter by user..." className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-aida-teal/30" />
+        </div>
+        <div className="relative flex-1 min-w-[160px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <input value={actionFilter} onChange={e => setActionFilter(e.target.value)}
+            placeholder="Filter by action..." className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-aida-teal/30" />
+        </div>
+        <button onClick={() => load(1)} className="flex items-center gap-2 px-4 py-2 bg-aida-teal text-white rounded-lg text-sm hover:bg-aida-dark transition-colors">
+          <RefreshCw className="w-4 h-4" /> Refresh
+        </button>
+      </div>
+
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+          <span className="text-sm font-medium text-slate-700">{total} entries</span>
+          {loading && <Loader2 className="w-4 h-4 animate-spin text-aida-teal" />}
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 text-slate-500 text-xs uppercase">
+              <tr>
+                <th className="px-4 py-2 text-left">Time</th>
+                <th className="px-4 py-2 text-left">User</th>
+                <th className="px-4 py-2 text-left">Action</th>
+                <th className="px-4 py-2 text-left">Resource</th>
+                <th className="px-4 py-2 text-left">IP</th>
+                <th className="px-4 py-2 text-left">Status</th>
+                <th className="px-4 py-2 text-left">Detail</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {logs.length === 0 && !loading && (
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400">No audit logs found</td></tr>
+              )}
+              {logs.map(log => (
+                <tr key={log.log_id} className="hover:bg-slate-50">
+                  <td className="px-4 py-2.5 text-slate-500 whitespace-nowrap">{fmtTime(log.created_at)}</td>
+                  <td className="px-4 py-2.5 font-medium text-slate-700">{log.username || '—'}</td>
+                  <td className="px-4 py-2.5">
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${actionColor(log.action)}`}>{log.action}</span>
+                  </td>
+                  <td className="px-4 py-2.5 text-slate-500">{log.resource_type || '—'}</td>
+                  <td className="px-4 py-2.5 text-slate-400 font-mono text-xs">{log.ip_address || '—'}</td>
+                  <td className="px-4 py-2.5">
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${statusColor(log.status)}`}>{log.status}</span>
+                  </td>
+                  <td className="px-4 py-2.5 text-slate-400 max-w-[200px] truncate">{log.detail || '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {pages > 1 && <div className="px-4 py-3 border-t border-slate-100"><Pagination page={page} pages={pages} total={total} onPage={load} /></div>}
+      </div>
+    </div>
+  );
+};
+
+// ── Server Logs Tab ───────────────────────────────────────────────────────────
+const ServerLogsTab: React.FC = () => {
+  const [logFile, setLogFile] = useState<'error' | 'app'>('error');
+  const [lines, setLines] = useState<string[]>([]);
+  const [exists, setExists] = useState(true);
+  const [totalLines, setTotalLines] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const load = useCallback(() => {
+    setLoading(true);
+    adminService.getServerLogs(logFile, 200)
+      .then(r => { setLines(r.lines); setExists(r.exists); setTotalLines(r.total_lines || 0); })
+      .finally(() => setLoading(false));
+  }, [logFile]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const lineColor = (l: string) => {
+    if (l.includes(' ERROR ') || l.includes(' CRITICAL ')) return 'text-red-400';
+    if (l.includes(' WARNING ')) return 'text-yellow-400';
+    return 'text-slate-300';
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <div className="flex rounded-lg border border-slate-200 overflow-hidden">
+          {(['error', 'app'] as const).map(f => (
+            <button key={f} onClick={() => setLogFile(f)}
+              className={`px-4 py-2 text-sm font-medium transition-colors ${logFile === f ? 'bg-aida-teal text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}>
+              {f === 'error' ? 'error.log' : 'app.log'}
+            </button>
+          ))}
+        </div>
+        <button onClick={load} className="flex items-center gap-2 px-4 py-2 bg-aida-teal text-white rounded-lg text-sm hover:bg-aida-dark transition-colors">
+          <RefreshCw className="w-4 h-4" /> Refresh
+        </button>
+        {loading && <Loader2 className="w-4 h-4 animate-spin text-aida-teal" />}
+        {!loading && exists && <span className="text-xs text-slate-400">Showing last 200 of {totalLines} lines</span>}
+      </div>
+
+      <div className="bg-[#0f1117] rounded-xl border border-slate-700 overflow-hidden">
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-slate-700">
+          <Terminal className="w-4 h-4 text-aida-mint" />
+          <span className="text-sm font-mono text-slate-300">{logFile}.log</span>
+        </div>
+        {!exists ? (
+          <div className="px-4 py-8 text-center text-slate-500 font-mono text-sm">
+            Log file not found — deploy to VPS first to generate logs.
+          </div>
+        ) : (
+          <div className="overflow-auto max-h-[60vh] p-4 font-mono text-xs leading-5">
+            {lines.map((line, i) => (
+              <div key={i} className={lineColor(line)}>{line || '\u00A0'}</div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const AdminPage: React.FC = () => {
   const [tab, setTab] = useState<AdminTab>('overview');
   const [stats, setStats] = useState<AdminStats | null>(null);
@@ -476,6 +632,8 @@ const AdminPage: React.FC = () => {
     { id: 'users', label: 'Users', icon: <Users className="w-4 h-4" /> },
     { id: 'workflows', label: 'Workflows', icon: <Zap className="w-4 h-4" /> },
     { id: 'templates', label: 'Templates', icon: <FileText className="w-4 h-4" /> },
+    { id: 'auditlogs', label: 'Audit Log', icon: <ClipboardList className="w-4 h-4" /> },
+    { id: 'serverlogs', label: 'Server Logs', icon: <Terminal className="w-4 h-4" /> },
     { id: 'apidocs', label: 'API Docs', icon: <Code2 className="w-4 h-4" /> },
   ];
 
@@ -513,6 +671,8 @@ const AdminPage: React.FC = () => {
         {tab === 'users' && <UsersTab onToast={showToast} />}
         {tab === 'workflows' && <WorkflowsTab onToast={showToast} />}
         {tab === 'templates' && <TemplatesTab onToast={showToast} />}
+        {tab === 'auditlogs' && <AuditLogsTab />}
+        {tab === 'serverlogs' && <ServerLogsTab />}
         {tab === 'apidocs' && (
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden" style={{ height: 'calc(100vh - 220px)' }}>
             <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border-b border-slate-200">

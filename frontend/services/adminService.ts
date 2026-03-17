@@ -49,6 +49,18 @@ export interface PagedResponse<T> {
   pages: number;
 }
 
+export interface AuditLogEntry {
+  log_id: string;
+  username: string | null;
+  action: string;
+  resource_type: string | null;
+  resource_id: string | null;
+  ip_address: string | null;
+  status: string;
+  detail: string | null;
+  created_at: string;
+}
+
 export const adminService = {
   getStats: async (): Promise<AdminStats> => {
     const { data } = await apiClient.get('/admin/stats');
@@ -92,6 +104,18 @@ export const adminService = {
 
   deleteTemplate: async (templateId: string) => {
     const { data } = await apiClient.delete(`/admin/templates/${templateId}`);
+    return data;
+  },
+
+  getAuditLogs: async (page = 1, action = '', username = ''): Promise<{ logs: AuditLogEntry[]; total: number; pages: number }> => {
+    const { data } = await apiClient.get('/admin/audit-logs', {
+      params: { page, limit: 50, action: action || undefined, username: username || undefined },
+    });
+    return data;
+  },
+
+  getServerLogs: async (logFile: 'error' | 'app', lines = 200): Promise<{ lines: string[]; file: string; exists: boolean; total_lines?: number }> => {
+    const { data } = await apiClient.get('/admin/server-logs', { params: { log_file: logFile, lines } });
     return data;
   },
 };

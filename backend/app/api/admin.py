@@ -6,6 +6,7 @@ from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel
 from datetime import datetime
+import os
 
 from ..database import get_db
 from ..models.user import User
@@ -365,4 +366,30 @@ async def list_audit_logs(
         "total": total,
         "page": page,
         "pages": (total + limit - 1) // limit,
+    }
+
+
+# ── Server Logs ───────────────────────────────────────────────────────────────
+
+LOG_DIR = "/var/log/app"
+
+@router.get("/server-logs")
+async def get_server_logs(
+    log_file: str = Query("error", regex="^(error|app)$"),
+    lines: int = Query(200, ge=10, le=1000),
+    _: User = Depends(require_admin),
+):
+    """Return the last N lines of error.log or app.log"""
+    path = os.path.join(LOG_DIR, f"{log_file}.log")
+    if not os.path.exists(path):
+        return {"lines": [], "file": f"{log_file}.log", "exists": False}
+
+    with open(path, "r", encoding="utf-8", errors="replace") as f:
+        all_lines = f.readlines()
+
+    return {
+        "lines": [l.rstrip() for l in all_lines[-lines:]],
+        "file": f"{log_file}.log",
+        "exists": True,
+        "total_lines": len(all_lines),
     }
