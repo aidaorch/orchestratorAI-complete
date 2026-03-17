@@ -5,12 +5,11 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import SQLAlchemyError
 from contextlib import asynccontextmanager
-from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from .config import settings
 from .database import init_db, get_db
 from .api import auth, workflow, template, admin, learning
-from .core.limiter import limiter
+from .core.limiter import limiter, _json_rate_limit_handler
 from .core.exceptions import (
     WorkflowNotFoundException,
     TemplateNotFoundException,
@@ -91,7 +90,7 @@ app = FastAPI(
 
 # ── Rate limiter ──────────────────────────────────────────────────────────────
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded, _json_rate_limit_handler)
 
 # ── CORS ──────────────────────────────────────────────────────────────────────
 _allowed_origins = [
