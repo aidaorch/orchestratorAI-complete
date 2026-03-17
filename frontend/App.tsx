@@ -263,8 +263,12 @@ const App: React.FC = () => {
   const handleSaveTemplate = async () => {
     if (!workflow || !templateName.trim()) return;
     try {
-      await saveTemplate(workflow, templateName, templateDesc);
-      // Record learning feedback only if there's a meaningful prompt to compare against
+      // Embed the current prompt into workflow_data so it's stored with the template
+      const workflowWithPrompt = {
+        ...workflow,
+        original_prompt: prompt.trim() || undefined,
+      };
+      await saveTemplate(workflowWithPrompt, templateName, templateDesc);
       if (prompt.trim()) {
         recordWorkflowFeedback(prompt, workflow, workflow).catch(console.error);
       }
@@ -403,18 +407,7 @@ const App: React.FC = () => {
             </svg>
           </button>
 
-          <div className="flex-1 min-w-0">
-            {workflow ? (
-              <h1 className="font-bold text-slate-800 text-sm truncate">
-                {workflow.workflow_metadata.workflow_name}
-                <span className="ml-2 text-xs font-normal text-slate-400 hidden sm:inline">
-                  v{workflow.workflow_metadata.version} · {workflow.steps?.length || 0} step{(workflow.steps?.length || 0) !== 1 ? 's' : ''}
-                </span>
-              </h1>
-            ) : (
-              <h1 className="font-bold text-slate-800 text-sm">AI Orchestrator Platform</h1>
-            )}
-          </div>
+          <div className="flex-1 min-w-0" />
 
           {/* Toolbar for workflow view */}
           {workflow && activeNav === 'workflow' && (
@@ -526,7 +519,7 @@ const App: React.FC = () => {
                   onKeyDown={e => { if (e.key === 'Enter' && e.ctrlKey) handleGenerate(); }}
                 />
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-3">
-                  <p className="text-xs text-slate-400 hidden sm:block">Ctrl+Enter to generate · GPT-4o</p>
+                  <div className="hidden sm:block" />
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <button
                       onClick={handleNewWorkflow}

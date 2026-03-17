@@ -41,6 +41,7 @@ export interface WorkflowStep {
 export interface WorkflowResult {
   workflow_metadata: WorkflowMetadata;
   steps: WorkflowStep[];
+  original_prompt?: string;
 }
 
 export interface AgentTypeStat {
