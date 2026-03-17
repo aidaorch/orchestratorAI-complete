@@ -17,6 +17,7 @@ from ..core.security import hash_password, verify_password, create_access_token,
 from ..config import settings
 from ..api.deps import get_current_user
 from ..services.audit_service import log_action
+from ..core.limiter import limiter
 
 router = APIRouter()
 
@@ -25,6 +26,7 @@ USERNAME_RE = re.compile(r'^[a-zA-Z0-9_]+$')
 
 # ── Register ──────────────────────────────────────────────────────────────────
 @router.post("/register", status_code=status.HTTP_201_CREATED, response_model=UserResponse)
+@limiter.limit("10/hour")
 async def register(user_data: UserCreate, request: Request, db: Session = Depends(get_db)):
     if not USERNAME_RE.match(user_data.username):
         raise HTTPException(status.HTTP_400_BAD_REQUEST,
@@ -61,6 +63,7 @@ async def register(user_data: UserCreate, request: Request, db: Session = Depend
 
 # ── Login ─────────────────────────────────────────────────────────────────────
 @router.post("/login", response_model=Token)
+@limiter.limit("5/minute")
 async def login(credentials: UserLogin, request: Request, db: Session = Depends(get_db)):
     user = db.query(User).filter(
         (User.username == credentials.username) | (User.email == credentials.username.lower())
@@ -111,7 +114,8 @@ async def login(credentials: UserLogin, request: Request, db: Session = Depends(
 
 # ── Token Refresh ─────────────────────────────────────────────────────────────
 @router.post("/refresh")
-async def refresh_token(token_data: TokenRefresh, db: Session = Depends(get_db)):
+@limiter.limit("20/minute")
+async def refresh_token(token_data: TokenRefresh, request: Request, db: Session = Depends(get_db)):
     payload = verify_token(token_data.refresh_token)
     if not payload or payload.get("type") != "refresh":
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
