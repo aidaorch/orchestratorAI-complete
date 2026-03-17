@@ -185,7 +185,7 @@ const ExecutionMonitor: React.FC<ExecutionMonitorProps> = ({ workflow, onUpdateW
                 <div className="mb-8 bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-inner">
                     <div className="px-5 py-3 border-b border-slate-200 bg-white flex items-center justify-between">
                         <span className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                            <FileText className="w-4 h-4 text-indigo-500" />
+                            <FileText className="w-4 h-4 text-aida-teal" />
                             Live Workflow Map
                         </span>
                         <span className="text-xs text-slate-400">Real-time step status</span>
@@ -301,3 +301,4 @@ const ExecutionMonitor: React.FC<ExecutionMonitorProps> = ({ workflow, onUpdateW
 };
 
 export default ExecutionMonitor;
+

@@ -51,21 +51,18 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-aida-dark via-[#005560] to-aida-dark flex items-center justify-center p-4">
             {/* Background orbs */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl" />
-                <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
+                <div className="absolute -top-40 -right-40 w-96 h-96 bg-aida-teal/20 rounded-full blur-3xl" />
+                <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-aida-teal/10 rounded-full blur-3xl" />
             </div>
 
             <div className="relative z-10 w-full max-w-md">
                 {/* Logo */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mb-4 shadow-2xl shadow-indigo-500/50">
-                        <Sparkles className="w-8 h-8 text-white" />
-                    </div>
-                    <h1 className="text-3xl font-bold text-white">Orchestrator AI</h1>
-                    <p className="text-indigo-300 mt-2 text-sm">Internal Product Manager Platform</p>
+                    <img src="/aida-logo-white.png" alt="Aida" className="h-12 w-auto object-contain mx-auto mb-4" />
+                    <p className="text-aida-mint mt-2 text-sm">AI Workflow Orchestration Platform</p>
                 </div>
 
                 {/* Card */}
@@ -80,7 +77,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                                 setError('');
                                 setSuccess('');
                             }}
-                            className="text-sm text-indigo-300 hover:text-indigo-200 transition-colors"
+                            className="text-sm text-aida-mint hover:text-white transition-colors"
                         >
                             {mode === 'login' ? 'Register' : 'Login'}
                         </button>
@@ -88,11 +85,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label className="block text-sm font-medium text-indigo-200 mb-2">
+                            <label className="block text-sm font-medium text-aida-mint mb-2">
                                 {mode === 'register' ? 'Username' : 'Username or Email'}
                             </label>
                             <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300" />
+                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-aida-mint/60" />
                                 <input
                                     type="text"
                                     value={username}
@@ -101,7 +98,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                                     required
                                     minLength={mode === 'register' ? 3 : undefined}
                                     maxLength={mode === 'register' ? 50 : undefined}
-                                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-indigo-300/60 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all"
+                                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-aida-mint/40 focus:outline-none focus:ring-2 focus:ring-aida-teal focus:border-transparent transition-all"
                                 />
                             </div>
                             {mode === 'register' && username && username.length < 3 && (
@@ -112,30 +109,30 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                         {mode === 'register' && (
                             <>
                                 <div>
-                                    <label className="block text-sm font-medium text-indigo-200 mb-2">Email</label>
+                                    <label className="block text-sm font-medium text-aida-mint mb-2">Email</label>
                                     <div className="relative">
-                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300" />
+                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-aida-mint/60" />
                                         <input
                                             type="email"
                                             value={email}
                                             onChange={e => setEmail(e.target.value)}
                                             placeholder="Enter your email"
                                             required
-                                            className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-indigo-300/60 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all"
+                                            className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-aida-mint/40 focus:outline-none focus:ring-2 focus:ring-aida-teal focus:border-transparent transition-all"
                                         />
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-indigo-200 mb-2">Full Name</label>
+                                    <label className="block text-sm font-medium text-aida-mint mb-2">Full Name</label>
                                     <div className="relative">
-                                        <UserPlus className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300" />
+                                        <UserPlus className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-aida-mint/60" />
                                         <input
                                             type="text"
                                             value={fullName}
                                             onChange={e => setFullName(e.target.value)}
                                             placeholder="Enter your full name"
                                             required
-                                            className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-indigo-300/60 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all"
+                                            className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-aida-mint/40 focus:outline-none focus:ring-2 focus:ring-aida-teal focus:border-transparent transition-all"
                                         />
                                     </div>
                                 </div>
@@ -143,9 +140,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                         )}
 
                         <div>
-                            <label className="block text-sm font-medium text-indigo-200 mb-2">Password</label>
+                            <label className="block text-sm font-medium text-aida-mint mb-2">Password</label>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-300" />
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-aida-mint/60" />
                                 <input
                                     type="password"
                                     value={password}
@@ -153,7 +150,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                                     placeholder="Enter your password"
                                     required
                                     minLength={8}
-                                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-indigo-300/60 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all"
+                                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-aida-mint/40 focus:outline-none focus:ring-2 focus:ring-aida-teal focus:border-transparent transition-all"
                                 />
                             </div>
                             {mode === 'register' && password && password.length < 8 && (
@@ -169,7 +166,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                         )}
 
                         {success && (
-                            <div className="flex items-center gap-2 bg-emerald-500/20 border border-emerald-400/30 rounded-xl px-4 py-3 text-emerald-300 text-sm">
+                            <div className="flex items-center gap-2 bg-aida-teal/20 border border-aida-teal/30 rounded-xl px-4 py-3 text-aida-mint text-sm">
                                 <Sparkles className="w-4 h-4 shrink-0" />
                                 {success}
                             </div>
@@ -178,14 +175,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100"
+                            className="w-full py-3 bg-gradient-to-r from-aida-teal to-aida-dark hover:from-aida-teal/90 hover:to-aida-dark/90 text-white font-semibold rounded-xl transition-all shadow-lg shadow-aida-teal/30 hover:shadow-aida-teal/50 hover:scale-[1.02] active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100"
                         >
                             {loading ? (mode === 'login' ? 'Signing in...' : 'Creating account...') : (mode === 'login' ? 'Sign In' : 'Create Account')}
                         </button>
                     </form>
 
-                    <p className="mt-6 text-center text-xs text-indigo-400">
-                        Internal use only — AI Orchestrator Platform v1.0
+                    <p className="mt-6 text-center text-xs text-aida-mint/50">
+                        Aida — AI Workflow Orchestration Platform
                     </p>
                 </div>
             </div>

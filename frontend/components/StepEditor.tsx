@@ -126,7 +126,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-4 flex items-center justify-between shrink-0">
+                <div className="bg-gradient-to-r from-aida-teal to-aida-dark">
                     <h2 className="text-lg font-bold">{isNewStep ? '➕ Add Step' : '✏️ Edit Step'}</h2>
                     <button onClick={onClose} className="p-1.5 hover:bg-white/20 rounded-lg transition-colors"><X className="w-5 h-5" /></button>
                 </div>
@@ -142,7 +142,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                             value={edited.step_id}
                             onChange={e => update({ step_id: parseInt(e.target.value) || 1 })}
                             disabled={!isNewStep}
-                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-400"
+                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-aida-teal focus:border-transparent disabled:bg-slate-50 disabled:text-slate-400"
                         />
                         {isNewStep && (
                             <p className="text-xs text-slate-400 mt-1">Step IDs will be auto-reindexed after insertion.</p>
@@ -156,7 +156,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                             <select
                                 value={edited.agent_type}
                                 onChange={e => update({ agent_type: e.target.value, agent_ids: [] })}
-                                className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-aida-teal focus:border-transparent"
                             >
                                 {agentTypes.map(t => <option key={t} value={t}>{t}</option>)}
                             </select>
@@ -175,10 +175,10 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                                     value={newTypeInput}
                                     onChange={e => setNewTypeInput(e.target.value)}
                                     placeholder="e.g., Notification"
-                                    className="flex-1 px-3 py-2 border border-indigo-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                    className="flex-1 px-3 py-2 border border-aida-teal rounded-lg text-sm focus:ring-2 focus:ring-aida-teal"
                                     onKeyDown={e => { if (e.key === 'Enter') handleAddCustomType(); }}
                                 />
-                                <button type="button" onClick={handleAddCustomType} className="px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">Add</button>
+                                <button type="button" onClick={handleAddCustomType} className="px-3 py-2 bg-aida-teal text-white rounded-lg text-sm font-medium hover:bg-aida-dark">Add</button>
                             </div>
                         )}
                     </div>
@@ -205,21 +205,21 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                                         <div
                                             key={agent.id}
                                             onClick={() => toggleAgent(agent.id)}
-                                            className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-indigo-50 border-b border-slate-100 last:border-0 transition-colors ${(edited.agent_ids || []).includes(agent.id) ? 'bg-indigo-50' : ''}`}
+                                            className={`flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-aida-light border-b border-slate-100 last:border-0 transition-colors ${(edited.agent_ids || []).includes(agent.id) ? 'bg-aida-light' : ''}`}
                                         >
                                             <span className="text-lg">{agent.icon}</span>
                                             <div className="flex-1 min-w-0">
                                                 <div className="text-sm font-medium text-slate-800">{agent.name}</div>
                                                 <div className="text-xs text-slate-500 truncate">{agent.description}</div>
                                             </div>
-                                            {(edited.agent_ids || []).includes(agent.id) && <span className="text-indigo-600 text-sm font-bold">✓</span>}
+                                            {(edited.agent_ids || []).includes(agent.id) && <span className="text-aida-teal text-sm font-bold">✓</span>}
                                         </div>
                                     ))
                                 )}
                             </div>
                         </div>
                         {(edited.agent_ids || []).length > 0 && (
-                            <p className="text-xs text-indigo-600 mt-1">{(edited.agent_ids || []).length} agent(s) selected</p>
+                            <p className="text-xs text-aida-teal mt-1">{(edited.agent_ids || []).length} agent(s) selected</p>
                         )}
                     </div>
 
@@ -231,7 +231,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                             onChange={e => update({ action_description: e.target.value })}
                             rows={3}
                             placeholder="Describe what this step does in detail..."
-                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-aida-teal focus:border-transparent resize-none"
                         />
                     </div>
 
@@ -278,7 +278,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                                                 }));
                                             }}
                                             className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1.5
-                                                ${isSelected ? 'bg-indigo-100 border-indigo-300 text-indigo-700' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:border-slate-300'}`}
+                                                ${isSelected ? 'bg-aida-light border-aida-teal text-aida-dark' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:border-slate-300'}`}
                                         >
                                             <span className="w-4 h-4 rounded-full bg-white flex items-center justify-center text-[10px] font-bold shadow-sm shrink-0">
                                                 {pred.step_id}
@@ -299,7 +299,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                                 <button type="button"
                                     key={t}
                                     onClick={() => update({ timing_logic: t })}
-                                    className={`px-4 py-2 rounded-xl text-sm font-medium border transition-colors ${edited.timing_logic === t ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600'}`}
+                                    className={`px-4 py-2 rounded-xl text-sm font-medium border transition-colors ${edited.timing_logic === t ? 'bg-aida-teal border-aida-teal text-white shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:border-aida-teal hover:text-aida-teal'}`}
                                 >
                                     {t}
                                 </button>
@@ -310,7 +310,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                                 value={edited.trigger_condition || ''}
                                 onChange={e => update({ trigger_condition: e.target.value })}
                                 placeholder="Describe the trigger condition (e.g., 'When a new lead is added to Salesforce')"
-                                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-aida-teal"
                                 rows={2}
                             />
                         )}
@@ -322,7 +322,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                                         <select
                                             value={edited.recurring_period || 'daily'}
                                             onChange={e => update({ recurring_period: e.target.value as any })}
-                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-aida-teal"
                                         >
                                             <option value="hourly">Hourly</option>
                                             <option value="daily">Daily</option>
@@ -336,7 +336,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                                             type="time"
                                             value={edited.recurring_time || ''}
                                             onChange={e => update({ recurring_time: e.target.value })}
-                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-aida-teal"
                                         />
                                     </div>
                                 </div>
@@ -347,7 +347,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                                         value={edited.recurring_stop_condition || ''}
                                         onChange={e => update({ recurring_stop_condition: e.target.value })}
                                         placeholder="e.g., Run until target audience size reaches 10,000"
-                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-aida-teal"
                                     />
                                     <p className="text-xs text-slate-400 mt-1">If empty, will run indefinitely based on the period.</p>
                                 </div>
@@ -362,7 +362,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                                 <button type="button"
                                     key={val}
                                     onClick={() => updateInput({ input_type: val as any })}
-                                    className={`py-2 rounded-lg text-xs font-medium transition-all border ${edited.input_config.input_type === val ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-300 hover:border-indigo-400'}`}
+                                    className={`py-2 rounded-lg text-xs font-medium transition-all border ${edited.input_config.input_type === val ? 'bg-aida-teal text-white border-aida-teal' : 'bg-white text-slate-600 border-slate-300 hover:border-aida-teal'}`}
                                 >
                                     {label}
                                 </button>
@@ -391,7 +391,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                                     onChange={e => updateInput({ script_content: e.target.value, source: 'Script', type: 'Script' })}
                                     rows={5}
                                     placeholder="Paste or type your JS/Python/other script here..."
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-indigo-500 resize-none bg-white"
+                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-aida-teal resize-none bg-white"
                                 />
                                 <input ref={fileInputRef} type="file" className="hidden" accept=".js,.py,.sh,.ts" onChange={handleFileUpload} />
                                 <button type="button"
@@ -465,7 +465,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                             value={edited.output_storage}
                             onChange={e => update({ output_storage: e.target.value })}
                             placeholder="e.g., s3://bucket/output.json, postgres://table, local://output/"
-                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-aida-teal focus:border-transparent"
                         />
                     </div>
 
@@ -477,7 +477,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                             value={edited.parallel_group || ''}
                             onChange={e => update({ parallel_group: e.target.value || undefined })}
                             placeholder="e.g., group_A  (leave empty for sequential)"
-                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-aida-teal focus:border-transparent"
                         />
                     </div>
 
@@ -491,7 +491,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                             value={edited.inline_comment || ''}
                             onChange={e => update({ inline_comment: e.target.value })}
                             placeholder="Internal note for team reference..."
-                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-aida-teal focus:border-transparent"
                         />
                     </div>
                 </div>
@@ -501,7 +501,7 @@ export const StepEditor: React.FC<StepEditorProps> = ({
                     <button onClick={onClose} className="px-5 py-2 text-slate-600 hover:bg-slate-200 rounded-lg font-medium transition-colors text-sm">Cancel</button>
                     <button type="button"
                         onClick={handleSave}
-                        className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 text-sm"
+                        className="px-5 py-2 bg-gradient-to-r from-aida-teal to-aida-dark"
                     >
                         <Save className="w-4 h-4" />
                         Save Step
@@ -511,3 +511,4 @@ export const StepEditor: React.FC<StepEditorProps> = ({
         </div>
     );
 };
+

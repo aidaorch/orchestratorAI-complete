@@ -269,7 +269,7 @@ export const TemplateLibrary: React.FC<TemplateLibraryProps> = ({
                             {/* Mobile back button */}
                             <button
                                 onClick={() => setSelected(null)}
-                                className="md:hidden flex items-center gap-1.5 text-sm text-indigo-600 font-medium mb-2"
+                                className="md:hidden flex items-center gap-1.5 text-sm text-aida-teal font-medium mb-2"
                             >
                                 ← Back to list
                             </button>
@@ -413,3 +413,5 @@ export const TemplateLibrary: React.FC<TemplateLibraryProps> = ({
         </div>
     );
 };
+
+

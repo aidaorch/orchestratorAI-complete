@@ -80,13 +80,13 @@ const ResetPasswordModal: React.FC<{
         <input
           type="password" value={pw} onChange={e => setPw(e.target.value)}
           placeholder="New password (min 8 chars)"
-          className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 mb-4"
+          className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-aida-teal mb-4"
           autoFocus
         />
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2 border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50">Cancel</button>
           <button onClick={handle} disabled={pw.length < 8 || loading}
-            className="flex-1 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2 bg-aida-teal text-white rounded-xl text-sm font-medium hover:bg-aida-dark disabled:opacity-50 flex items-center justify-center gap-2">
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Key className="w-4 h-4" />}
             Reset
           </button>
@@ -98,15 +98,15 @@ const ResetPasswordModal: React.FC<{
 
 // ── Overview Tab ──────────────────────────────────────────────────────────────
 const OverviewTab: React.FC<{ stats: AdminStats | null; loading: boolean }> = ({ stats, loading }) => {
-  if (loading) return <div className="flex items-center justify-center h-48"><Loader2 className="w-8 h-8 animate-spin text-indigo-400" /></div>;
+  if (loading) return <div className="flex items-center justify-center h-48"><Loader2 className="w-8 h-8 animate-spin text-aida-teal" /></div>;
   if (!stats) return null;
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Users" value={stats.total_users} icon={<Users className="w-6 h-6 text-indigo-600" />} color="bg-indigo-50" />
+        <StatCard label="Total Users" value={stats.total_users} icon={<Users className="w-6 h-6 text-aida-teal" />} color="bg-aida-light" />
         <StatCard label="Active Users" value={stats.active_users} icon={<UserCheck className="w-6 h-6 text-emerald-600" />} color="bg-emerald-50" />
-        <StatCard label="New This Week" value={stats.new_users_this_week} icon={<Activity className="w-6 h-6 text-purple-600" />} color="bg-purple-50" />
+        <StatCard label="New This Week" value={stats.new_users_this_week} icon={<Activity className="w-6 h-6 text-aida-teal" />} color="bg-aida-light" />
         <StatCard label="Admin Users" value={stats.admin_users} icon={<Shield className="w-6 h-6 text-amber-600" />} color="bg-amber-50" />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -197,7 +197,7 @@ const UsersTab: React.FC<{ onToast: (msg: { type: 'ok' | 'err'; text: string }) 
         <div className="relative flex-1 max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search users…"
-            className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500" />
+            className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-aida-teal" />
         </div>
         <button onClick={() => load(page, search)} className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors">
           <RefreshCw className="w-4 h-4 text-slate-500" />
@@ -253,7 +253,7 @@ const UsersTab: React.FC<{ onToast: (msg: { type: 'ok' | 'err'; text: string }) 
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
                       <button onClick={() => setResetTarget(u)} title="Reset password"
-                        className="p-1.5 rounded-lg hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 transition-colors">
+                        className="p-1.5 rounded-lg hover:bg-aida-light text-slate-400 hover:text-aida-teal transition-colors">
                         <Key className="w-3.5 h-3.5" />
                       </button>
                       <button onClick={() => del(u)} title="Delete user"
@@ -311,7 +311,7 @@ const WorkflowsTab: React.FC<{ onToast: (msg: { type: 'ok' | 'err'; text: string
         <div className="relative flex-1 max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search workflows…"
-            className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500" />
+            className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-aida-teal" />
         </div>
         <button onClick={() => load(page, search)} className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors">
           <RefreshCw className="w-4 h-4 text-slate-500" />
@@ -397,7 +397,7 @@ const TemplatesTab: React.FC<{ onToast: (msg: { type: 'ok' | 'err'; text: string
         <div className="relative flex-1 max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search templates…"
-            className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500" />
+            className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-aida-teal" />
         </div>
         <button onClick={() => load(page, search)} className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors">
           <RefreshCw className="w-4 h-4 text-slate-500" />
@@ -484,10 +484,10 @@ const AdminPage: React.FC = () => {
       <Toast msg={toast} />
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white px-4 sm:px-8 py-6">
+      <div className="bg-gradient-to-r from-aida-dark to-[#005560] text-white px-4 sm:px-8 py-6">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-1">
-            <Shield className="w-6 h-6 text-indigo-300" />
+            <Shield className="w-6 h-6 text-aida-mint" />
             <h1 className="text-xl font-bold">Admin Panel</h1>
           </div>
           <p className="text-slate-400 text-sm">Manage users, content, and platform settings</p>
@@ -500,7 +500,7 @@ const AdminPage: React.FC = () => {
           {TABS.map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
               className={`flex items-center gap-2 px-4 py-3.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
-                ${tab === t.id ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>
+                ${tab === t.id ? 'border-aida-teal text-aida-teal' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>
               {t.icon}{t.label}
             </button>
           ))}
@@ -516,13 +516,13 @@ const AdminPage: React.FC = () => {
         {tab === 'apidocs' && (
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden" style={{ height: 'calc(100vh - 220px)' }}>
             <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border-b border-slate-200">
-              <Code2 className="w-4 h-4 text-indigo-500" />
+              <Code2 className="w-4 h-4 text-aida-teal" />
               <span className="text-sm font-medium text-slate-700">Swagger UI — Interactive API Documentation</span>
               <a
                 href="/api/docs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-auto text-xs text-indigo-600 hover:underline"
+                className="ml-auto text-xs text-aida-teal hover:underline"
               >
                 Open in new tab ↗
               </a>
@@ -540,3 +540,4 @@ const AdminPage: React.FC = () => {
 };
 
 export default AdminPage;
+

@@ -153,7 +153,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-full">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+                <Loader2 className="w-8 h-8 animate-spin text-aida-teal" />
             </div>
         );
     }
@@ -171,7 +171,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
             <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
                 {/* ── Hero card ── */}
-                <div className="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 rounded-2xl p-6 mb-6 shadow-xl shadow-indigo-200">
+                <div className="bg-gradient-to-br from-aida-dark via-aida-teal to-[#005560] rounded-2xl p-6 mb-6 shadow-xl shadow-aida-teal/20">
                     <div className="flex items-center gap-5">
                         <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center text-white text-2xl font-bold shadow-inner border border-white/30 shrink-0">
                             {initials}
@@ -180,13 +180,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
                             <h1 className="text-2xl font-bold text-white truncate">
                                 {profile.full_name || profile.username}
                             </h1>
-                            <p className="text-indigo-200 text-sm mt-0.5">@{profile.username}</p>
+                            <p className="text-aida-mint text-sm mt-0.5">@{profile.username}</p>
                             <div className="flex items-center gap-1.5 mt-2">
                                 <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-400/20 border border-emerald-300/30 text-emerald-200 rounded-full text-xs font-medium">
                                     <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
                                     Active
                                 </span>
-                                <span className="text-indigo-300 text-xs">Member since {fmt(profile.created_at)}</span>
+                                <span className="text-aida-mint/80 text-xs">Member since {fmt(profile.created_at)}</span>
                             </div>
                         </div>
                     </div>
@@ -199,9 +199,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
                             { icon: <Activity className="w-4 h-4" />, label: 'Last Login', value: stats?.last_login ? new Date(stats.last_login).toLocaleDateString() : 'Today' },
                         ].map(s => (
                             <div key={s.label} className="bg-white/10 backdrop-blur rounded-xl p-3 text-center border border-white/10">
-                                <div className="flex justify-center text-indigo-200 mb-1">{s.icon}</div>
+                                <div className="flex justify-center text-aida-mint/80 mb-1">{s.icon}</div>
                                 <div className="text-xl font-bold text-white">{s.value}</div>
-                                <div className="text-xs text-indigo-300">{s.label}</div>
+                                <div className="text-xs text-aida-mint/70">{s.label}</div>
                             </div>
                         ))}
                     </div>
@@ -220,7 +220,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
                             className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${section === tab.id
                                 ? tab.id === 'danger'
                                     ? 'bg-red-50 text-red-600 shadow-sm'
-                                    : 'bg-indigo-50 text-indigo-700 shadow-sm'
+                                    : 'bg-aida-light text-aida-dark shadow-sm'
                                 : 'text-slate-500 hover:text-slate-700'
                                 }`}
                         >
@@ -238,12 +238,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
                         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-                                    <User className="w-4 h-4 text-indigo-500" /> Display Name
+                                    <User className="w-4 h-4 text-aida-teal" /> Display Name
                                 </h3>
                                 {!editingName && (
                                     <button
                                         onClick={() => { setEditingName(true); setNameValue(profile.full_name || ''); }}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors"
+                                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-aida-teal bg-aida-light hover:bg-aida-mint rounded-lg transition-colors"
                                     >
                                         <Edit2 className="w-3.5 h-3.5" /> Edit
                                     </button>
@@ -257,14 +257,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
                                         onChange={e => setNameValue(e.target.value)}
                                         maxLength={100}
                                         placeholder="Your full name"
-                                        className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                        className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-aida-teal focus:border-transparent"
                                         autoFocus
                                         onKeyDown={e => { if (e.key === 'Enter') handleSaveName(); if (e.key === 'Escape') setEditingName(false); }}
                                     />
                                     <button
                                         onClick={handleSaveName}
                                         disabled={nameSaving || !nameValue.trim()}
-                                        className="px-3 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-1.5"
+                                        className="px-3 py-2 bg-aida-teal text-white rounded-lg text-sm font-medium hover:bg-aida-dark disabled:opacity-50 flex items-center gap-1.5"
                                     >
                                         {nameSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                                         Save
@@ -290,7 +290,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
                         {/* Account info (read-only) */}
                         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                             <h3 className="font-semibold text-slate-800 flex items-center gap-2 mb-4">
-                                <Shield className="w-4 h-4 text-indigo-500" /> Account Information
+                                <Shield className="w-4 h-4 text-aida-teal" /> Account Information
                             </h3>
                             <div className="space-y-3">
                                 {[
@@ -314,7 +314,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
                 {section === 'security' && (
                     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                         <h3 className="font-semibold text-slate-800 flex items-center gap-2 mb-1">
-                            <Key className="w-4 h-4 text-indigo-500" /> Change Password
+                            <Key className="w-4 h-4 text-aida-teal" /> Change Password
                         </h3>
                         <p className="text-xs text-slate-400 mb-5">After changing your password, all other sessions will be signed out.</p>
 
@@ -332,7 +332,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
                                         onChange={e => field.setter(e.target.value)}
                                         placeholder={field.placeholder}
                                         required
-                                        className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                        className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-aida-teal focus:border-transparent transition-all"
                                     />
                                 </div>
                             ))}
@@ -347,7 +347,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
                             <button
                                 type="submit"
                                 disabled={pwSaving || !pwCurrent || !pwNew || !pwConfirm}
-                                className="w-full py-2.5 bg-indigo-600 text-white rounded-xl font-medium text-sm hover:bg-indigo-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                                className="w-full py-2.5 bg-aida-teal text-white rounded-xl font-medium text-sm hover:bg-aida-dark disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
                             >
                                 {pwSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Key className="w-4 h-4" />}
                                 Update Password

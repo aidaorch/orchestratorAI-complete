@@ -311,21 +311,13 @@ const App: React.FC = () => {
       {/* ---- Sidebar ---- */}
       <aside className={`
         fixed lg:relative inset-y-0 left-0 z-40
-        w-56 shrink-0 bg-gradient-to-b from-indigo-950 via-slate-900 to-indigo-950 text-white flex flex-col shadow-xl
+        w-56 shrink-0 bg-gradient-to-b from-aida-dark via-[#005560] to-aida-dark text-white flex flex-col shadow-xl
         transition-transform duration-300
         ${mobileNavOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         {/* Logo */}
         <div className="px-5 py-5 border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <div className="font-bold text-sm leading-tight">Orchestrator AI</div>
-              <div className="text-indigo-300 text-xs">v1.0</div>
-            </div>
-          </div>
+          <img src="/aida-logo-white.png" alt="Aida" className="h-8 w-auto object-contain" />
         </div>
 
         {/* Nav items */}
@@ -342,14 +334,14 @@ const App: React.FC = () => {
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group
                 ${activeNav === item.id
                   ? 'bg-white/15 text-white shadow-inner'
-                  : 'text-indigo-200 hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed'
+                  : 'text-aida-mint/80 hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed'
                 }`}
             >
-              <span className={`shrink-0 ${activeNav === item.id ? 'text-indigo-300' : 'text-indigo-400 group-hover:text-indigo-200'}`}>
+              <span className={`shrink-0 ${activeNav === item.id ? 'text-aida-mint' : 'text-aida-mint/60 group-hover:text-aida-mint'}`}>
                 {item.icon}
               </span>
               {item.label}
-              {activeNav === item.id && <ChevronRight className="w-3.5 h-3.5 ml-auto text-indigo-300" />}
+              {activeNav === item.id && <ChevronRight className="w-3.5 h-3.5 ml-auto text-aida-mint" />}
             </button>
           ))}
         </nav>
@@ -358,26 +350,26 @@ const App: React.FC = () => {
         <div className="px-3 pb-4 space-y-2 border-t border-white/10 pt-3">
           <button
             onClick={() => { handleNewWorkflow(); setMobileNavOpen(false); }}
-            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-indigo-200 hover:bg-white/10 hover:text-white transition-all"
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-aida-mint/80 hover:bg-white/10 hover:text-white transition-all"
           >
-            <PlusSquare className="w-5 h-5 text-indigo-400" />
+            <PlusSquare className="w-5 h-5 text-aida-mint/60" />
             New Workflow
           </button>
           {/* Profile button */}
           <button
             onClick={() => { setActiveNav('profile'); setMobileNavOpen(false); }}
-            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${activeNav === 'profile' ? 'bg-white/15 text-white' : 'text-indigo-200 hover:bg-white/10 hover:text-white'}`}
+            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${activeNav === 'profile' ? 'bg-white/15 text-white' : 'text-aida-mint/80 hover:bg-white/10 hover:text-white'}`}
           >
-            <UserCircle className="w-5 h-5 text-indigo-400" />
+            <UserCircle className="w-5 h-5 text-aida-mint/60" />
             Profile
           </button>
           {/* Admin button — only visible to admins */}
           {isAdmin && (
             <button
               onClick={() => { setActiveNav('admin'); setMobileNavOpen(false); }}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${activeNav === 'admin' ? 'bg-amber-500/20 text-amber-200' : 'text-amber-400 hover:bg-amber-500/10 hover:text-amber-300'}`}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${activeNav === 'admin' ? 'bg-aida-red/20 text-red-200' : 'text-red-400 hover:bg-aida-red/10 hover:text-red-300'}`}
             >
-              <Shield className="w-5 h-5 text-amber-400" />
+              <Shield className="w-5 h-5 text-red-400" />
               Admin Panel
             </button>
           )}
@@ -388,7 +380,7 @@ const App: React.FC = () => {
               localStorage.removeItem('user');
               setIsLoggedIn(false);
             }}
-            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-indigo-400 hover:bg-red-500/20 hover:text-red-300 transition-all"
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-aida-mint/60 hover:bg-aida-red/20 hover:text-red-300 transition-all"
           >
             <X className="w-5 h-5" />
             Sign Out
@@ -444,7 +436,7 @@ const App: React.FC = () => {
               {/* Edit mode toggle */}
               <button
                 onClick={() => setEditMode(e => !e)}
-                className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${editMode ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${editMode ? 'bg-aida-light text-aida-dark' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
               >
                 <Edit3 className="w-4 h-4" />
                 <span className="hidden sm:inline">{editMode ? 'Editing' : 'Edit'}</span>
@@ -538,7 +530,7 @@ const App: React.FC = () => {
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <button
                       onClick={handleNewWorkflow}
-                      className="flex items-center justify-center gap-2 px-4 py-2.5 border-2 border-indigo-300 text-indigo-600 rounded-xl font-medium hover:bg-indigo-50 transition-all text-sm"
+                      className="flex items-center justify-center gap-2 px-4 py-2.5 border-2 border-aida-teal text-aida-teal rounded-xl font-medium hover:bg-aida-light transition-all text-sm"
                     >
                       <PlusSquare className="w-4 h-4" />
                       New Blank Workflow
@@ -546,7 +538,7 @@ const App: React.FC = () => {
                     <button
                       onClick={handleGenerate}
                       disabled={!prompt.trim() || isLoading}
-                      className="flex items-center justify-center gap-2 px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-indigo-200 transition-all disabled:opacity-60 text-sm"
+                      className="flex items-center justify-center gap-2 px-6 py-2.5 bg-gradient-to-r from-aida-teal to-aida-dark text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-aida-teal/30 transition-all disabled:opacity-60 text-sm"
                     >
                       {isLoading ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating…</> : <><Sparkles className="w-4 h-4" /> Generate Workflow</>}
                     </button>
@@ -596,7 +588,7 @@ const App: React.FC = () => {
                   <p className="text-sm mt-1">Generate one from the Prompt tab, or create a blank workflow.</p>
                   <button
                     onClick={handleNewWorkflow}
-                    className="mt-4 flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:shadow-lg transition-all text-sm"
+                    className="mt-4 flex items-center gap-2 px-5 py-2.5 bg-aida-teal text-white rounded-xl font-medium hover:shadow-lg transition-all text-sm"
                   >
                     <PlusSquare className="w-4 h-4" /> New Blank Workflow
                   </button>

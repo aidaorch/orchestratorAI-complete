@@ -41,8 +41,8 @@ const LearningDashboard: React.FC = () => {
             {/* Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                 {[
-                    { icon: <BarChart2 className="w-5 h-5 text-indigo-600" />, label: 'Workflows Generated', value: history.length, color: 'bg-indigo-50 border-indigo-100' },
-                    { icon: <TrendingUp className="w-5 h-5 text-purple-600" />, label: 'Edit Sessions Captured', value: prefs.length, color: 'bg-purple-50 border-purple-100' },
+                    { icon: <BarChart2 className="w-5 h-5 text-aida-teal" />, label: 'Workflows Generated', value: history.length, color: 'bg-aida-light border-aida-mint' },
+                    { icon: <TrendingUp className="w-5 h-5 text-aida-teal" />, label: 'Edit Sessions Captured', value: prefs.length, color: 'bg-aida-light border-aida-mint' },
                     { icon: <Zap className="w-5 h-5 text-amber-600" />, label: 'Total Preferences Learned', value: totalEdits, color: 'bg-amber-50 border-amber-100' },
                 ].map(card => (
                     <div key={card.label} className={`${card.color} border rounded-xl p-5 flex items-center gap-4`}>
@@ -66,7 +66,7 @@ const LearningDashboard: React.FC = () => {
                     {/* Top Agent Types */}
                     <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
                         <div className="flex items-center gap-2 mb-4">
-                            <Brain className="w-4 h-4 text-indigo-600" />
+                            <Brain className="w-4 h-4 text-aida-teal" />
                             <h3 className="font-semibold text-slate-700 text-sm">Top Agent Preferences</h3>
                         </div>
                         {topAgents.length === 0 ? <p className="text-xs text-slate-400">No data yet</p> : (
@@ -79,7 +79,7 @@ const LearningDashboard: React.FC = () => {
                                         </div>
                                         <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
                                             <div
-                                                className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
+                                                className="h-full bg-gradient-to-r from-aida-teal to-aida-dark rounded-full"
                                                 style={{ width: `${(count / topAgents[0][1]) * 100}%` }}
                                             />
                                         </div>
@@ -92,7 +92,7 @@ const LearningDashboard: React.FC = () => {
                     {/* Timing Preferences */}
                     <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
                         <div className="flex items-center gap-2 mb-4">
-                            <Clock className="w-4 h-4 text-purple-600" />
+                            <Clock className="w-4 h-4 text-aida-teal" />
                             <h3 className="font-semibold text-slate-700 text-sm">Timing Preferences</h3>
                         </div>
                         {topTimings.length === 0 ? <p className="text-xs text-slate-400">No data yet</p> : (
@@ -105,7 +105,7 @@ const LearningDashboard: React.FC = () => {
                                         </div>
                                         <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
                                             <div
-                                                className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                                                className="h-full bg-gradient-to-r from-aida-teal to-[#005560] rounded-full"
                                                 style={{ width: `${(count / topTimings[0][1]) * 100}%` }}
                                             />
                                         </div>
@@ -147,7 +147,7 @@ const LearningDashboard: React.FC = () => {
                         <div className="space-y-2">
                             {prefs.slice(0, 10).map(pref => (
                                 <div key={pref.id} className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg text-xs">
-                                    <Brain className="w-3.5 h-3.5 text-indigo-400 mt-0.5 shrink-0" />
+                                    <Brain className="w-3.5 h-3.5 text-aida-teal mt-0.5 shrink-0" />
                                     <div className="flex-1 min-w-0">
                                         <span className="text-slate-700 font-medium truncate block">"{pref.originalPrompt.slice(0, 80)}{pref.originalPrompt.length > 80 ? '…' : ''}"</span>
                                         <span className="text-slate-400 mt-0.5 block">{new Date(pref.savedAt).toLocaleString()}</span>
@@ -163,3 +163,5 @@ const LearningDashboard: React.FC = () => {
 };
 
 export default LearningDashboard;
+
+

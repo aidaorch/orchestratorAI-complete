@@ -26,7 +26,7 @@ const getTimingIcon = (timing: string) => {
   switch (timing.toLowerCase()) {
     case 'auto': return <Zap className="w-3 h-3 text-yellow-500" />;
     case 'manual': return <User className="w-3 h-3 text-blue-500" />;
-    case 'recurring': return <Repeat className="w-3 h-3 text-purple-500" />;
+    case 'recurring': return <Repeat className="w-3 h-3 text-aida-teal" />;
     case 'trigger': return <Clock className="w-3 h-3 text-orange-500" />;
     default: return <Clock className="w-3 h-3 text-slate-400" />;
   }
@@ -42,7 +42,7 @@ const AGENT_COLORS: Record<string, { badge: string; dot: string }> = {
   'subject line checker': { badge: 'bg-cyan-100 text-cyan-700 border-cyan-200', dot: 'bg-cyan-500' },
   scraper: { badge: 'bg-orange-100 text-orange-700 border-orange-200', dot: 'bg-orange-500' },
   crm: { badge: 'bg-sky-100 text-sky-700 border-sky-200', dot: 'bg-sky-500' },
-  outreach: { badge: 'bg-indigo-100 text-indigo-700 border-indigo-200', dot: 'bg-indigo-500' },
+  outreach: { badge: 'bg-aida-light text-aida-dark border-aida-200', dot: 'bg-indigo-500' },
 };
 const getAC = (type: string) => AGENT_COLORS[type.toLowerCase()] || { badge: 'bg-slate-100 text-slate-700 border-slate-200', dot: 'bg-slate-400' };
 
@@ -180,7 +180,7 @@ const StepCard = React.forwardRef<HTMLDivElement, StepCardProps>((
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      className={`bg-white rounded-2xl border ${isDragTarget ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-slate-200'} shadow-sm hover:shadow-xl hover:border-indigo-300 transition-all duration-300 cursor-pointer w-60 shrink-0 select-none group ${statusRing}`}
+      className={`bg-white rounded-2xl border ${isDragTarget ? 'border-aida-500 ring-2 ring-indigo-200' : 'border-slate-200'} shadow-sm hover:shadow-xl hover:border-aida-300 transition-all duration-300 cursor-pointer w-60 shrink-0 select-none group ${statusRing}`}
       style={{ boxShadow: '0 4px 20px rgba(99,102,241,0.06), 0 1px 4px rgba(0,0,0,0.04)', position: 'relative', backgroundColor: '#ffffff' }}
     >
       {/* Step number badge */}
@@ -219,7 +219,7 @@ const StepCard = React.forwardRef<HTMLDivElement, StepCardProps>((
             {step.agent_ids.slice(0, 2).map(aid => {
               const ag = getAgentById(aid);
               return ag ? (
-                <span key={aid} className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-indigo-50 text-indigo-700 rounded-full text-[10px] border border-indigo-100">{ag.name}</span>
+                <span key={aid} className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-aida-light text-aida-dark rounded-full text-[10px] border border-aida-100">{ag.name}</span>
               ) : null;
             })}
             {step.agent_ids.length > 2 && <span className="text-[10px] text-slate-400">+{step.agent_ids.length - 2}</span>}
@@ -228,7 +228,7 @@ const StepCard = React.forwardRef<HTMLDivElement, StepCardProps>((
       </div>
 
       {/* View Details Hint */}
-      <div className="border-t border-slate-100 px-4 py-2 bg-slate-50/50 rounded-b-2xl group-hover:bg-indigo-50/50 transition-colors flex justify-between items-center text-[10px] font-semibold text-slate-400 group-hover:text-indigo-500">
+      <div className="border-t border-slate-100 px-4 py-2 bg-slate-50/50 rounded-b-2xl group-hover:bg-aida-light/50 transition-colors flex justify-between items-center text-[10px] font-semibold text-slate-400 group-hover:text-aida-teal">
         Click to view details &amp; chat
         <Sparkles className="w-3 h-3" />
       </div>
@@ -236,24 +236,24 @@ const StepCard = React.forwardRef<HTMLDivElement, StepCardProps>((
       {/* Edit toolbar overlays */}
       {editMode && (
         <div className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20" onClick={e => e.stopPropagation()}>
-          {onEdit && <button onClick={onEdit} className="p-1.5 bg-white shadow-md rounded-full text-indigo-500 hover:bg-indigo-50 hover:text-indigo-600 transition-colors border border-slate-200"><Edit2 className="w-3 h-3" /></button>}
+          {onEdit && <button onClick={onEdit} className="p-1.5 bg-white shadow-md rounded-full text-aida-teal hover:bg-aida-light hover:text-aida-teal transition-colors border border-slate-200"><Edit2 className="w-3 h-3" /></button>}
           {onDelete && <button onClick={() => { if (confirm('Delete this step?')) onDelete!(); }} className="p-1.5 bg-white shadow-md rounded-full text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors border border-slate-200"><Trash2 className="w-3 h-3" /></button>}
         </div>
       )}
       {editMode && (
         <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20" onClick={e => e.stopPropagation()}>
-          {onAddBefore && <button onClick={onAddBefore} className="px-2 py-1 text-[10px] bg-white shadow-md border border-slate-200 rounded-full font-semibold text-slate-500 hover:text-indigo-600 transition-colors">+Before</button>}
-          {onAddAfter && <button onClick={onAddAfter} className="px-2 py-1 text-[10px] bg-white shadow-md border border-slate-200 rounded-full font-semibold text-slate-500 hover:text-indigo-600 transition-colors">+After</button>}
+          {onAddBefore && <button onClick={onAddBefore} className="px-2 py-1 text-[10px] bg-white shadow-md border border-slate-200 rounded-full font-semibold text-slate-500 hover:text-aida-teal transition-colors">+Before</button>}
+          {onAddAfter && <button onClick={onAddAfter} className="px-2 py-1 text-[10px] bg-white shadow-md border border-slate-200 rounded-full font-semibold text-slate-500 hover:text-aida-teal transition-colors">+After</button>}
         </div>
       )}
       {editMode && (
         <div className="absolute top-1/2 -translate-y-1/2 -left-4 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20" onClick={e => e.stopPropagation()}>
-          {onMoveLeft && <button onClick={onMoveLeft} title="Move left" className="p-1 bg-white shadow-md rounded-full text-slate-400 hover:text-indigo-600 transition-colors border border-slate-200"><ChevronDown className="w-3 h-3 rotate-90" /></button>}
+          {onMoveLeft && <button onClick={onMoveLeft} title="Move left" className="p-1 bg-white shadow-md rounded-full text-slate-400 hover:text-aida-teal transition-colors border border-slate-200"><ChevronDown className="w-3 h-3 rotate-90" /></button>}
         </div>
       )}
       {editMode && (
         <div className="absolute top-1/2 -translate-y-1/2 -right-4 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20" onClick={e => e.stopPropagation()}>
-          {onMoveRight && <button onClick={onMoveRight} title="Move right" className="p-1 bg-white shadow-md rounded-full text-slate-400 hover:text-indigo-600 transition-colors border border-slate-200"><ChevronDown className="w-3 h-3 -rotate-90" /></button>}
+          {onMoveRight && <button onClick={onMoveRight} title="Move right" className="p-1 bg-white shadow-md rounded-full text-slate-400 hover:text-aida-teal transition-colors border border-slate-200"><ChevronDown className="w-3 h-3 -rotate-90" /></button>}
         </div>
       )}
     </div>
@@ -279,7 +279,7 @@ const StepDetailsModal = ({
   return (
     <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-6 transition-all">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-aida-dark/40 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal Box */}
       <div className="relative bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-5xl h-[92vh] sm:max-h-[85vh] flex flex-col md:flex-row overflow-hidden animate-in fade-in zoom-in-95 duration-300">
@@ -307,8 +307,8 @@ const StepDetailsModal = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-indigo-50/50 border border-indigo-100 p-4 rounded-2xl">
-                <h4 className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1.5">Input</h4>
+              <div className="bg-aida-light/50 border border-aida-100 p-4 rounded-2xl">
+                <h4 className="text-[10px] font-bold text-aida-teal uppercase tracking-widest mb-1.5">Input</h4>
                 <p className="text-xs text-slate-700 font-medium break-all">
                   {step.input_config.input_type === 'prior_output'
                     ? `From step(s): ${(step.input_config.prior_step_ids || []).join(', ') || 'N/A'}`
@@ -317,8 +317,8 @@ const StepDetailsModal = ({
                       : step.input_config.prompt_text || step.input_config.source}
                 </p>
               </div>
-              <div className="bg-purple-50/50 border border-purple-100 p-4 rounded-2xl">
-                <h4 className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-1.5">Output</h4>
+              <div className="bg-aida-light/50 border border-aida-mint p-4 rounded-2xl">
+                <h4 className="text-[10px] font-bold text-aida-teal uppercase tracking-widest mb-1.5">Output</h4>
                 <p className="text-xs text-slate-700 font-medium break-all truncate" title={step.output_storage}>
                   {step.output_storage || '(not set)'}
                 </p>
@@ -339,7 +339,7 @@ const StepDetailsModal = ({
               <div className="pt-4 mt-auto">
                 <button
                   onClick={() => { onClose(); onEdit(step); }}
-                  className="w-full flex justify-center items-center gap-2 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 hover:text-indigo-600 hover:border-indigo-200 transition-colors shadow-sm"
+                  className="w-full flex justify-center items-center gap-2 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 hover:text-aida-teal hover:border-aida-200 transition-colors shadow-sm"
                 >
                   <Edit2 className="w-4 h-4" /> Edit Step Configuration
                 </button>
@@ -355,7 +355,7 @@ const StepDetailsModal = ({
           </button>
 
           <div className="p-6 border-b border-slate-200 flex items-center gap-2 bg-white/50 shrink-0">
-            <Sparkles className="w-5 h-5 text-indigo-500" />
+            <Sparkles className="w-5 h-5 text-aida-teal" />
             <h3 className="font-bold text-slate-800">Ask AI</h3>
             <span className="text-[10px] font-semibold text-slate-400 bg-white border border-slate-200 px-2 py-0.5 rounded-full">Assistant</span>
           </div>
@@ -368,7 +368,7 @@ const StepDetailsModal = ({
                 <p className="text-xs mb-6 max-w-[200px]">You can ask me to generate a master prompt, debug scripts, or suggest tools.</p>
                 <div className="flex flex-col w-full max-w-[240px] gap-2">
                   {['Generate a master prompt', 'Suggest tools for this agent', 'Check for potential errors'].map(q => (
-                    <button key={q} onClick={() => onSendChat(step, q)} className="text-xs px-4 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl hover:border-indigo-300 hover:text-indigo-600 hover:shadow-md transition-all text-left font-medium">
+                    <button key={q} onClick={() => onSendChat(step, q)} className="text-xs px-4 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl hover:border-aida-300 hover:text-aida-teal hover:shadow-md transition-all text-left font-medium">
                       {q}
                     </button>
                   ))}
@@ -378,7 +378,7 @@ const StepDetailsModal = ({
 
             {chat.messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-[13px] leading-relaxed shadow-sm ${m.role === 'user' ? 'bg-indigo-600 text-white rounded-br-sm' : 'bg-white border border-slate-200 text-slate-700 rounded-bl-sm'}`}>
+                <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-[13px] leading-relaxed shadow-sm ${m.role === 'user' ? 'bg-aida-teal text-white rounded-br-sm' : 'bg-white border border-slate-200 text-slate-700 rounded-bl-sm'}`}>
                   {m.content}
                 </div>
               </div>
@@ -388,9 +388,9 @@ const StepDetailsModal = ({
               <div className="flex justify-start">
                 <div className="bg-white border border-slate-200 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
                   <div className="flex gap-1.5 items-center h-4">
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span className="w-1.5 h-1.5 bg-aida-teal rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-1.5 h-1.5 bg-aida-teal rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-1.5 h-1.5 bg-aida-teal rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               </div>
@@ -404,12 +404,12 @@ const StepDetailsModal = ({
                 value={chatInput}
                 onChange={e => onChatInputChange(e.target.value)}
                 placeholder="Message AI..."
-                className="w-full text-sm border-2 border-slate-100 bg-slate-50 rounded-2xl pl-5 pr-14 py-3.5 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all placeholder:text-slate-400 font-medium"
+                className="w-full text-sm border-2 border-slate-100 bg-slate-50 rounded-2xl pl-5 pr-14 py-3.5 focus:border-aida-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all placeholder:text-slate-400 font-medium"
               />
               <button
                 type="submit"
                 disabled={!chatInput.trim() || chat.loading}
-                className="absolute right-2 p-2 bg-indigo-600 text-white rounded-xl disabled:opacity-40 disabled:bg-slate-400 hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all shadow-md"
+                className="absolute right-2 p-2 bg-aida-teal text-white rounded-xl disabled:opacity-40 disabled:bg-slate-400 hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all shadow-md"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -783,7 +783,7 @@ const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
           <div className="relative pointer-events-auto" ref={optionsRef}>
             <button
               onClick={() => setShowOptions(v => !v)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium border transition-colors shadow-sm ${showOptions ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white/90 backdrop-blur border-slate-200 text-slate-600 hover:bg-white'}`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium border transition-colors shadow-sm ${showOptions ? 'bg-aida-light border-aida-200 text-aida-dark' : 'bg-white/90 backdrop-blur border-slate-200 text-slate-600 hover:bg-white'}`}
             >
               <Settings2 className="w-4 h-4" /> View
             </button>
@@ -795,11 +795,11 @@ const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
                   <div className="flex gap-2">
                     <button
                       onClick={() => setLineStyle('bezier')}
-                      className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${lineStyle === 'bezier' ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600'}`}
+                      className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${lineStyle === 'bezier' ? 'bg-aida-teal border-aida-600 text-white shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:border-aida-300 hover:text-aida-teal'}`}
                     >∿ Curved</button>
                     <button
                       onClick={() => setLineStyle('straight')}
-                      className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${lineStyle === 'straight' ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-600'}`}
+                      className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all ${lineStyle === 'straight' ? 'bg-aida-teal border-aida-600 text-white shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:border-aida-300 hover:text-aida-teal'}`}
                     >— Straight</button>
                   </div>
                 </div>
@@ -814,10 +814,10 @@ const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
                       <button
                         key={opt.key}
                         onClick={() => setBgStyle(opt.key)}
-                        className={`flex-1 flex flex-col items-center gap-1.5 py-2 px-1 rounded-lg border transition-all ${bgStyle === opt.key ? 'border-indigo-400 bg-indigo-50 shadow-sm' : 'border-slate-200 hover:border-slate-300 bg-white'}`}
+                        className={`flex-1 flex flex-col items-center gap-1.5 py-2 px-1 rounded-lg border transition-all ${bgStyle === opt.key ? 'border-aida-400 bg-aida-light shadow-sm' : 'border-slate-200 hover:border-slate-300 bg-white'}`}
                       >
                         <div className="w-10 h-8 rounded-md border border-slate-200" style={opt.css} />
-                        <span className={`text-[10px] font-semibold ${bgStyle === opt.key ? 'text-indigo-600' : 'text-slate-500'}`}>{opt.label}</span>
+                        <span className={`text-[10px] font-semibold ${bgStyle === opt.key ? 'text-aida-teal' : 'text-slate-500'}`}>{opt.label}</span>
                       </button>
                     ))}
                   </div>
@@ -829,7 +829,7 @@ const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
           {editMode && onAddStep && (
             <button
               onClick={() => onAddStep((safeData.steps && safeData.steps.length > 0) ? safeData.steps[safeData.steps.length - 1].step_id : undefined)}
-              className="pointer-events-auto flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+              className="pointer-events-auto flex items-center gap-2 px-4 py-2 bg-aida-teal text-white rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
             >
               <Plus className="w-4 h-4" /> Add Step
             </button>
@@ -865,8 +865,8 @@ const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
         >
           {(!safeData.steps || safeData.steps.length === 0) ? (
             <div className="flex flex-col items-center justify-center h-full text-slate-400">
-              <div className="w-24 h-24 bg-indigo-50 rounded-3xl flex items-center justify-center mb-4">
-                <Zap className="w-10 h-10 text-indigo-300" />
+              <div className="w-24 h-24 bg-aida-light rounded-3xl flex items-center justify-center mb-4">
+                <Zap className="w-10 h-10 text-aida-mint" />
               </div>
               <p className="font-medium text-slate-600">No steps yet</p>
               <p className="text-sm mt-1">Click "Add Step" to start building your workflow</p>
@@ -934,7 +934,7 @@ const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
                     <div key={colIdx} className="flex flex-col" style={{ gap: ROW_GAP }}>
                       {colSteps.length > 1 && (
                         <div className="text-center">
-                          <span className="inline-block text-[10px] font-bold tracking-wider text-purple-500 bg-purple-50 border border-purple-100 rounded-lg px-3 py-1 shadow-sm uppercase">Parallel</span>
+                          <span className="inline-block text-[10px] font-bold tracking-wider text-aida-teal bg-aida-light border border-aida-mint rounded-lg px-3 py-1 shadow-sm uppercase">Parallel</span>
                         </div>
                       )}
                       {colSteps.map(step => {
@@ -990,3 +990,4 @@ const WorkflowVisualizer: React.FC<WorkflowVisualizerProps> = ({
 };
 
 export default WorkflowVisualizer;
+

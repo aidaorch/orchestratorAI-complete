@@ -52,7 +52,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ data }) => {
           { label: 'Parallel Groups', value: new Set(safeSteps.map(s => s.parallel_group).filter(Boolean)).size },
         ].map(stat => (
           <div key={stat.label} className="bg-white border border-slate-200 rounded-xl p-4 text-center shadow-sm">
-            <div className="text-2xl font-bold text-indigo-700">{stat.value}</div>
+            <div className="text-2xl font-bold text-aida-teal">{stat.value}</div>
             <div className="text-xs text-slate-500 mt-0.5">{stat.label}</div>
           </div>
         ))}
@@ -122,7 +122,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ data }) => {
                   <tr key={step.step_id} className="hover:bg-slate-50 transition-colors">
                     <td className="py-2 pr-4 text-slate-400 font-mono text-xs">{step.step_id}</td>
                     <td className="py-2 pr-4">
-                      <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs font-medium">{step.agent_type}</span>
+                      <span className="px-2 py-0.5 bg-aida-light text-aida-teal rounded text-xs font-medium">{step.agent_type}</span>
                     </td>
                     <td className="py-2 pr-4 text-slate-600 text-xs">{step.timing_logic}</td>
                     <td className="py-2 pr-4 text-slate-500 text-xs font-mono">
@@ -143,3 +143,4 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ data }) => {
 };
 
 export default AnalyticsDashboard;
+
