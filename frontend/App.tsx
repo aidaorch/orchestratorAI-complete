@@ -597,7 +597,7 @@ const App: React.FC = () => {
 
           {/* ===== TEMPLATES page ===== */}
           {activeNav === 'templates' && (
-            <TemplateLibrary isOpen={true} onClose={() => setActiveNav('prompt')} onLoadTemplate={handleLoadTemplate} inline={true} />
+            <TemplateLibrary isOpen={true} onClose={() => setActiveNav('prompt')} onLoadTemplate={handleLoadTemplate} page={true} />
           )}
 
           {/* ===== AGENT LIBRARY page ===== */}
