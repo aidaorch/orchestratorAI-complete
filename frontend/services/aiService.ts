@@ -56,7 +56,7 @@ export const recordWorkflowFeedback = async (
     }
   });
 
-  saveLearnedPreference({ originalPrompt, agentTypeChanges, timingPreferences, inputTypePreferences });
+  await saveLearnedPreference({ originalPrompt, agentTypeChanges, timingPreferences, inputTypePreferences });
 };
 
 // ── Step Chat ─────────────────────────────────────────────────────────────────

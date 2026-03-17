@@ -5,10 +5,11 @@ import { WorkflowHistory } from '../types';
 import { Brain, TrendingUp, Zap, CheckCircle2, BarChart2, Clock } from 'lucide-react';
 
 const LearningDashboard: React.FC = () => {
-    const prefs = getLearnedPreferences();
+    const [prefs, setPrefs] = useState<any[]>([]);
     const [history, setHistory] = useState<WorkflowHistory[]>([]);
 
     useEffect(() => {
+        getLearnedPreferences().then(setPrefs);
         getWorkflowHistory().then(setHistory);
     }, []);
 

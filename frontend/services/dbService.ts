@@ -81,27 +81,32 @@ export const addCustomAgentType = (type: string): void => {
     }
 };
 
-// ----- Learned Preferences (kept in localStorage for now) -----
-const LEARNED_PREFS_KEY = 'oai_learned_prefs';
-
-export const getLearnedPreferences = (): LearnedPreference[] => {
+// ----- Learned Preferences (Backend API) -----
+export const getLearnedPreferences = async (): Promise<LearnedPreference[]> => {
     try {
-        const raw = localStorage.getItem(LEARNED_PREFS_KEY);
-        return raw ? JSON.parse(raw) : [];
-    } catch {
+        const response = await apiClient.get('/learning/preferences');
+        return (response.data as any[]).map((p: any) => ({
+            id: p.preference_id,
+            originalPrompt: p.original_prompt || '',
+            agentTypeChanges: p.agent_type_changes || {},
+            timingPreferences: p.timing_preferences || {},
+            inputTypePreferences: p.input_type_preferences || {},
+            savedAt: p.created_at,
+        }));
+    } catch (error) {
+        console.error('Error fetching learned preferences:', error);
         return [];
     }
 };
 
-export const saveLearnedPreference = (pref: Omit<LearnedPreference, 'id' | 'savedAt'>): void => {
+export const saveLearnedPreference = async (pref: Omit<LearnedPreference, 'id' | 'savedAt'>): Promise<void> => {
     try {
-        const prefs = getLearnedPreferences();
-        const entry: LearnedPreference = {
-            ...pref,
-            id: `pref_${Date.now()}`,
-            savedAt: new Date().toISOString(),
-        };
-        localStorage.setItem(LEARNED_PREFS_KEY, JSON.stringify([entry, ...prefs].slice(0, 50)));
+        await apiClient.post('/learning/preferences', {
+            original_prompt: pref.originalPrompt,
+            agent_type_changes: pref.agentTypeChanges,
+            timing_preferences: pref.timingPreferences,
+            input_type_preferences: pref.inputTypePreferences,
+        });
     } catch (error) {
         console.error('Error saving learned preference:', error);
     }

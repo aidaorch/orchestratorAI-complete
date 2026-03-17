@@ -7,7 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from contextlib import asynccontextmanager
 from .config import settings
 from .database import init_db, get_db
-from .api import auth, workflow, template, admin
+from .api import auth, workflow, template, admin, learning
 from .core.exceptions import (
     WorkflowNotFoundException,
     TemplateNotFoundException,
@@ -160,6 +160,7 @@ app.include_router(auth.router, prefix=f"{settings.API_V1_PREFIX}/auth", tags=["
 app.include_router(workflow.router, prefix=f"{settings.API_V1_PREFIX}/workflow", tags=["Workflows"])
 app.include_router(template.router, prefix=f"{settings.API_V1_PREFIX}/template", tags=["Templates"])
 app.include_router(admin.router, prefix=f"{settings.API_V1_PREFIX}/admin", tags=["Admin"])
+app.include_router(learning.router, prefix=f"{settings.API_V1_PREFIX}/learning", tags=["Learning"])
 
 
 # ── Root & Health ─────────────────────────────────────────────────────────────
