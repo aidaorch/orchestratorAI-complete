@@ -1,7 +1,7 @@
 """Authentication API routes"""
 import re
 import hashlib
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta, timezone
 from ..database import get_db
@@ -16,6 +16,7 @@ from ..schemas.user import (
 from ..core.security import hash_password, verify_password, create_access_token, create_refresh_token, verify_token
 from ..config import settings
 from ..api.deps import get_current_user
+from ..services.audit_service import log_action
 
 router = APIRouter()
 
@@ -24,7 +25,7 @@ USERNAME_RE = re.compile(r'^[a-zA-Z0-9_]+$')
 
 # ── Register ──────────────────────────────────────────────────────────────────
 @router.post("/register", status_code=status.HTTP_201_CREATED, response_model=UserResponse)
-async def register(user_data: UserCreate, db: Session = Depends(get_db)):
+async def register(user_data: UserCreate, request: Request, db: Session = Depends(get_db)):
     if not USERNAME_RE.match(user_data.username):
         raise HTTPException(status.HTTP_400_BAD_REQUEST,
                             detail="Username can only contain letters, numbers, and underscores")
@@ -47,6 +48,10 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
         db.add(user)
         db.commit()
         db.refresh(user)
+        log_action(db, action="REGISTER", user_id=user.user_id, username=user.username,
+                   resource_type="user", resource_id=str(user.user_id),
+                   ip_address=request.client.host if request.client else None,
+                   user_agent=request.headers.get("user-agent"))
         return user
     except Exception as e:
         db.rollback()
@@ -56,17 +61,25 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
 
 # ── Login ─────────────────────────────────────────────────────────────────────
 @router.post("/login", response_model=Token)
-async def login(credentials: UserLogin, db: Session = Depends(get_db)):
+async def login(credentials: UserLogin, request: Request, db: Session = Depends(get_db)):
     user = db.query(User).filter(
         (User.username == credentials.username) | (User.email == credentials.username.lower())
     ).first()
 
     if not user or not verify_password(credentials.password, user.password_hash):
+        log_action(db, action="LOGIN_FAILED", username=credentials.username,
+                   status="failure", detail="Invalid credentials",
+                   ip_address=request.client.host if request.client else None,
+                   user_agent=request.headers.get("user-agent"))
         raise HTTPException(status.HTTP_401_UNAUTHORIZED,
                             detail="Incorrect username/email or password",
                             headers={"WWW-Authenticate": "Bearer"})
 
     if not user.is_active:
+        log_action(db, action="LOGIN_FAILED", user_id=user.user_id, username=user.username,
+                   status="failure", detail="Account inactive",
+                   ip_address=request.client.host if request.client else None,
+                   user_agent=request.headers.get("user-agent"))
         raise HTTPException(status.HTTP_403_FORBIDDEN,
                             detail="Account is inactive. Please contact support.")
 
@@ -81,6 +94,11 @@ async def login(credentials: UserLogin, db: Session = Depends(get_db)):
     ))
     user.last_login = datetime.now(timezone.utc)
     db.commit()
+
+    log_action(db, action="LOGIN", user_id=user.user_id, username=user.username,
+               resource_type="user", resource_id=str(user.user_id),
+               ip_address=request.client.host if request.client else None,
+               user_agent=request.headers.get("user-agent"))
 
     return Token(
         access_token=access_token,
@@ -122,11 +140,15 @@ async def refresh_token(token_data: TokenRefresh, db: Session = Depends(get_db))
 
 # ── Logout ────────────────────────────────────────────────────────────────────
 @router.post("/logout")
-async def logout(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def logout(request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     db.query(RefreshToken).filter(
         RefreshToken.user_id == current_user.user_id
     ).update({"revoked": True})
     db.commit()
+    log_action(db, action="LOGOUT", user_id=current_user.user_id, username=current_user.username,
+               resource_type="user", resource_id=str(current_user.user_id),
+               ip_address=request.client.host if request.client else None,
+               user_agent=request.headers.get("user-agent"))
     return {"message": "Logged out successfully"}
 
 

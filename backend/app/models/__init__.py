@@ -6,6 +6,7 @@ from .execution import WorkflowExecution, ExecutionLog
 from .learning import LearnedPreference
 from .agent import Agent
 from .token import RefreshToken
+from .audit import AuditLog
 
 __all__ = [
     "User",
@@ -18,4 +19,5 @@ __all__ = [
     "LearnedPreference",
     "Agent",
     "RefreshToken",
+    "AuditLog",
 ]

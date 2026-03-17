@@ -6,7 +6,7 @@ from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import SQLAlchemyError
 from contextlib import asynccontextmanager
 from .config import settings
-from .database import init_db
+from .database import init_db, get_db
 from .api import auth, workflow, template, admin
 from .core.exceptions import (
     WorkflowNotFoundException,
@@ -16,12 +16,50 @@ from .core.exceptions import (
     AIServiceException
 )
 import logging
+import logging.handlers
+import os
 from datetime import datetime
 
+# ── Logging setup ─────────────────────────────────────────────────────────────
+# Ensure log directory exists
+LOG_DIR = "/var/log/app"
+os.makedirs(LOG_DIR, exist_ok=True)
+
+# Root logger
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL),
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
+
+# Server error log — ERROR and above only, rotates daily, keeps 30 days
+_error_handler = logging.handlers.TimedRotatingFileHandler(
+    filename=os.path.join(LOG_DIR, "error.log"),
+    when="midnight",
+    backupCount=30,
+    encoding="utf-8",
+)
+_error_handler.setLevel(logging.ERROR)
+_error_handler.setFormatter(logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+))
+
+# Application log — INFO and above, rotates daily, keeps 14 days
+_app_handler = logging.handlers.TimedRotatingFileHandler(
+    filename=os.path.join(LOG_DIR, "app.log"),
+    when="midnight",
+    backupCount=14,
+    encoding="utf-8",
+)
+_app_handler.setLevel(logging.INFO)
+_app_handler.setFormatter(logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+))
+
+# Attach handlers to root logger so all modules inherit them
+root_logger = logging.getLogger()
+root_logger.addHandler(_error_handler)
+root_logger.addHandler(_app_handler)
+
 logger = logging.getLogger(__name__)
 
 
@@ -49,7 +87,6 @@ app = FastAPI(
 )
 
 # ── CORS ──────────────────────────────────────────────────────────────────────
-# allow_credentials=True requires explicit origins — never use ["*"] with credentials
 _allowed_origins = [
     settings.FRONTEND_URL,
     "http://localhost:3000",
@@ -57,8 +94,6 @@ _allowed_origins = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5173",
 ]
-# In production, Nginx proxies everything through one domain so CORS is
-# effectively same-origin. We still keep the list explicit for safety.
 
 app.add_middleware(
     CORSMiddleware,
@@ -93,18 +128,31 @@ async def validation_handler(request: Request, exc: ValidationException):
 
 @app.exception_handler(AIServiceException)
 async def ai_service_handler(request: Request, exc: AIServiceException):
+    logger.error(f"AI service error on {request.method} {request.url.path}: {exc}")
     return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"detail": str(exc)})
 
 
 @app.exception_handler(SQLAlchemyError)
 async def database_handler(request: Request, exc: SQLAlchemyError):
-    logger.error(f"Database error: {str(exc)}")
+    logger.error(f"Database error on {request.method} {request.url.path}: {exc}")
     return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"detail": "Database error occurred"})
 
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content={"detail": exc.errors()})
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    logger.error(
+        f"Unhandled exception on {request.method} {request.url.path}: {type(exc).__name__}: {exc}",
+        exc_info=True
+    )
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": "An unexpected error occurred"}
+    )
 
 
 # ── Routers ───────────────────────────────────────────────────────────────────

@@ -46,6 +46,8 @@ services:
       FRONTEND_URL: ${FRONTEND_URL}
       ENVIRONMENT: production
       LOG_LEVEL: INFO
+    volumes:
+      - ./logs:/var/log/app
     depends_on:
       postgres:
         condition: service_healthy

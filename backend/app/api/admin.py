@@ -1,5 +1,5 @@
 """Admin API routes — all endpoints require is_admin=True"""
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import Optional
@@ -12,8 +12,10 @@ from ..models.user import User
 from ..models.workflow import Workflow
 from ..models.template import Template
 from ..models.execution import WorkflowExecution
+from ..models.audit import AuditLog
 from ..api.deps import require_admin
 from ..core.security import hash_password
+from ..services.audit_service import log_action
 
 router = APIRouter()
 
@@ -147,6 +149,7 @@ async def list_users(
 async def update_user(
     user_id: UUID,
     body: UserToggleRequest,
+    http_request: Request,
     current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ):
@@ -164,6 +167,12 @@ async def update_user(
         user.is_admin = body.is_admin
 
     db.commit()
+    log_action(db, action="ADMIN_USER_UPDATE", user_id=current_admin.user_id,
+               username=current_admin.username, resource_type="user",
+               resource_id=str(user_id),
+               detail=f"is_active={body.is_active}, is_admin={body.is_admin}",
+               ip_address=http_request.client.host if http_request.client else None,
+               user_agent=http_request.headers.get("user-agent"))
     return {"message": "User updated", "user_id": str(user_id)}
 
 
@@ -171,6 +180,7 @@ async def update_user(
 async def admin_reset_password(
     user_id: UUID,
     body: AdminPasswordResetRequest,
+    http_request: Request,
     current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ):
@@ -183,12 +193,18 @@ async def admin_reset_password(
 
     user.password_hash = hash_password(body.new_password)
     db.commit()
+    log_action(db, action="ADMIN_PASSWORD_RESET", user_id=current_admin.user_id,
+               username=current_admin.username, resource_type="user",
+               resource_id=str(user_id),
+               ip_address=http_request.client.host if http_request.client else None,
+               user_agent=http_request.headers.get("user-agent"))
     return {"message": "Password reset successfully"}
 
 
 @router.delete("/users/{user_id}")
 async def delete_user(
     user_id: UUID,
+    http_request: Request,
     current_admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ):
@@ -199,8 +215,14 @@ async def delete_user(
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User not found")
 
+    deleted_username = user.username
     db.delete(user)
     db.commit()
+    log_action(db, action="ADMIN_USER_DELETE", user_id=current_admin.user_id,
+               username=current_admin.username, resource_type="user",
+               resource_id=str(user_id), detail=f"Deleted user: {deleted_username}",
+               ip_address=http_request.client.host if http_request.client else None,
+               user_agent=http_request.headers.get("user-agent"))
     return {"message": "User deleted"}
 
 
@@ -303,3 +325,44 @@ async def delete_template(
     db.delete(tpl)
     db.commit()
     return {"message": "Template deleted"}
+
+
+# ── Audit Logs ────────────────────────────────────────────────────────────────
+
+@router.get("/audit-logs")
+async def list_audit_logs(
+    page: int = Query(1, ge=1),
+    limit: int = Query(50, ge=1, le=200),
+    action: Optional[str] = Query(None),
+    username: Optional[str] = Query(None),
+    _: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    query = db.query(AuditLog)
+    if action:
+        query = query.filter(AuditLog.action.ilike(f"%{action}%"))
+    if username:
+        query = query.filter(AuditLog.username.ilike(f"%{username}%"))
+
+    total = query.count()
+    logs = query.order_by(AuditLog.created_at.desc()).offset((page - 1) * limit).limit(limit).all()
+
+    return {
+        "logs": [
+            {
+                "log_id": str(log.log_id),
+                "username": log.username,
+                "action": log.action,
+                "resource_type": log.resource_type,
+                "resource_id": log.resource_id,
+                "ip_address": log.ip_address,
+                "status": log.status,
+                "detail": log.detail,
+                "created_at": log.created_at.isoformat(),
+            }
+            for log in logs
+        ],
+        "total": total,
+        "page": page,
+        "pages": (total + limit - 1) // limit,
+    }

@@ -1,5 +1,5 @@
 """Workflow API routes"""
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 from sqlalchemy.orm import Session
 from typing import List, Optional, Dict, Any
 from uuid import UUID
@@ -16,6 +16,7 @@ from ..schemas.workflow import (
 )
 from ..api.deps import get_current_user
 from ..services.ai_service import AIService
+from ..services.audit_service import log_action
 from ..core.exceptions import WorkflowNotFoundException
 import logging
 
@@ -40,6 +41,7 @@ class StepChatRequest(BaseModel):
 @router.post("/generate", response_model=WorkflowResponse)
 async def generate_workflow(
     request: WorkflowGenerateRequest,
+    http_request: Request,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -86,6 +88,12 @@ async def generate_workflow(
         
         logger.info(f"Generated workflow {workflow.workflow_id} for user {current_user.username}")
         
+        log_action(db, action="WORKFLOW_CREATE", user_id=current_user.user_id,
+                   username=current_user.username, resource_type="workflow",
+                   resource_id=str(workflow.workflow_id),
+                   ip_address=http_request.client.host if http_request.client else None,
+                   user_agent=http_request.headers.get("user-agent"))
+
         return WorkflowResponse(
             workflow_id=str(workflow.workflow_id),
             workflow_name=workflow.workflow_name,
@@ -172,6 +180,7 @@ async def get_workflow(
 async def update_workflow(
     workflow_id: UUID,
     request: WorkflowUpdateRequest,
+    http_request: Request,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -220,6 +229,12 @@ async def update_workflow(
     
     db.refresh(workflow)
     
+    log_action(db, action="WORKFLOW_UPDATE", user_id=current_user.user_id,
+               username=current_user.username, resource_type="workflow",
+               resource_id=str(workflow_id),
+               ip_address=http_request.client.host if http_request.client else None,
+               user_agent=http_request.headers.get("user-agent"))
+
     return WorkflowResponse(
         workflow_id=str(workflow.workflow_id),
         workflow_name=workflow.workflow_name,
@@ -234,6 +249,7 @@ async def update_workflow(
 @router.delete("/{workflow_id}")
 async def delete_workflow(
     workflow_id: UUID,
+    http_request: Request,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -252,6 +268,12 @@ async def delete_workflow(
     db.delete(workflow)
     db.commit()
     
+    log_action(db, action="WORKFLOW_DELETE", user_id=current_user.user_id,
+               username=current_user.username, resource_type="workflow",
+               resource_id=str(workflow_id),
+               ip_address=http_request.client.host if http_request.client else None,
+               user_agent=http_request.headers.get("user-agent"))
+
     return {"message": "Workflow deleted successfully"}
 
 
