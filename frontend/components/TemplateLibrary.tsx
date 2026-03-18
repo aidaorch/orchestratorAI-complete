@@ -143,9 +143,11 @@ export const TemplateLibrary: React.FC<TemplateLibraryProps> = ({
                                 }}
                                     className="bg-white border-2 border-slate-200 hover:border-aida-teal rounded-xl overflow-hidden cursor-pointer transition-all group shadow-sm hover:shadow-md"
                                 >
-                                    <div className="h-40 bg-slate-50 overflow-hidden pointer-events-none">
+                                    <div className="h-40 bg-slate-50 overflow-hidden pointer-events-none relative">
                                         {hasSteps ? (
-                                            <WorkflowVisualizer data={displayWorkflow} editMode={false} connectorStyle="straight" />
+                                            <div style={{ transform: 'scale(0.45)', transformOrigin: 'top left', width: '222%', height: '222%' }}>
+                                                <WorkflowVisualizer data={displayWorkflow} editMode={false} connectorStyle="straight" />
+                                            </div>
                                         ) : (
                                             <div className="h-full flex items-center justify-center text-slate-300 text-xs">
                                                 {full ? 'No steps' : 'Loading…'}
