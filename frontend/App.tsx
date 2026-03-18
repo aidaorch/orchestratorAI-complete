@@ -155,7 +155,7 @@ const App: React.FC = () => {
       savePrompt(prompt);
       // generateWorkflow is async (useCase, provider) directly
       const result = await generateWorkflow(prompt, provider);
-      setWorkflow(result);
+      setWorkflow({ ...result, original_prompt: prompt.trim() });
       setOriginalWorkflow(result);
       saveWorkflowToHistory(prompt, result);
       setHistory([{ steps: result.steps }]);
@@ -566,29 +566,37 @@ const App: React.FC = () => {
 
           {/* ===== WORKFLOW page ===== */}
           {activeNav === 'workflow' && (
-            <div className="h-full">
-              {workflow ? (
-                <WorkflowVisualizer
-                  data={workflow}
-                  editMode={editMode}
-                  onEditStep={openEditStep}
-                  onDeleteStep={handleDeleteStep}
-                  onAddStep={handleAddStep}
-                  onReorderSteps={newSteps => updateSteps(newSteps)}
-                />
-              ) : (
-                <div className="h-full flex flex-col items-center justify-center text-slate-400">
-                  <Zap className="w-16 h-16 mb-4 opacity-20" />
-                  <p className="font-medium text-slate-600">No workflow yet</p>
-                  <p className="text-sm mt-1">Generate one from the Prompt tab, or create a blank workflow.</p>
-                  <button
-                    onClick={handleNewWorkflow}
-                    className="mt-4 flex items-center gap-2 px-5 py-2.5 bg-aida-teal text-white rounded-xl font-medium hover:shadow-lg transition-all text-sm"
-                  >
-                    <PlusSquare className="w-4 h-4" /> New Blank Workflow
-                  </button>
+            <div className="h-full flex flex-col">
+              {workflow?.original_prompt && (
+                <div className="shrink-0 bg-slate-50 border-b border-slate-200 px-4 sm:px-6 py-2.5 flex items-start gap-2">
+                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide shrink-0 mt-0.5">Prompt</span>
+                  <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">{workflow.original_prompt}</p>
                 </div>
               )}
+              <div className="flex-1 overflow-hidden">
+                {workflow ? (
+                  <WorkflowVisualizer
+                    data={workflow}
+                    editMode={editMode}
+                    onEditStep={openEditStep}
+                    onDeleteStep={handleDeleteStep}
+                    onAddStep={handleAddStep}
+                    onReorderSteps={newSteps => updateSteps(newSteps)}
+                  />
+                ) : (
+                  <div className="h-full flex flex-col items-center justify-center text-slate-400">
+                    <Zap className="w-16 h-16 mb-4 opacity-20" />
+                    <p className="font-medium text-slate-600">No workflow yet</p>
+                    <p className="text-sm mt-1">Generate one from the Prompt tab, or create a blank workflow.</p>
+                    <button
+                      onClick={handleNewWorkflow}
+                      className="mt-4 flex items-center gap-2 px-5 py-2.5 bg-aida-teal text-white rounded-xl font-medium hover:shadow-lg transition-all text-sm"
+                    >
+                      <PlusSquare className="w-4 h-4" /> New Blank Workflow
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -599,7 +607,7 @@ const App: React.FC = () => {
 
           {/* ===== TEMPLATES page ===== */}
           {activeNav === 'templates' && (
-            <TemplateLibrary isOpen={true} onClose={() => setActiveNav('prompt')} onLoadTemplate={handleLoadTemplate} page={true} />
+            <TemplateLibrary isOpen={true} onClose={() => {}} onLoadTemplate={handleLoadTemplate} page={true} />
           )}
 
           {/* ===== AGENT LIBRARY page ===== */}

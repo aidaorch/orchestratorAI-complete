@@ -127,7 +127,8 @@ function mapTemplateResponse(data: any): WorkflowTemplate {
             is_template: true,
             version: String(data.version_number || 1)
         },
-        steps: Array.isArray(raw.steps) ? raw.steps : []
+        steps: Array.isArray(raw.steps) ? raw.steps : [],
+        original_prompt: raw.original_prompt ?? undefined,
     };
     return {
         id: data.template_id,

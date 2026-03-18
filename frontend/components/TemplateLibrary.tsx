@@ -25,6 +25,7 @@ export const TemplateLibrary: React.FC<TemplateLibraryProps> = ({
     isOpen, onClose, onLoadTemplate, inline = false, page = false,
 }) => {
     const [templates, setTemplates] = useState<WorkflowTemplate[]>([]);
+    const [fullTemplates, setFullTemplates] = useState<Record<string, WorkflowTemplate>>({});
     const [selected, setSelected] = useState<WorkflowTemplate | null>(null);
     const [selectedLoading, setSelectedLoading] = useState(false);
     const [search, setSearch] = useState('');
@@ -42,6 +43,15 @@ export const TemplateLibrary: React.FC<TemplateLibraryProps> = ({
         const list = await getTemplates();
         setTemplates(list);
         if (selected) setSelected(list.find(t => t.id === selected.id) || null);
+        // In inline mode, fetch full data for each template so diagrams render correctly
+        if (inline) {
+            const fullMap: Record<string, WorkflowTemplate> = {};
+            await Promise.all(list.map(async t => {
+                const full = await getTemplateById(t.id);
+                if (full) fullMap[t.id] = full;
+            }));
+            setFullTemplates(fullMap);
+        }
     };
 
     const filtered = templates.filter(t =>
@@ -121,24 +131,35 @@ export const TemplateLibrary: React.FC<TemplateLibraryProps> = ({
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {filtered.map((t: WorkflowTemplate) => (
-                            <div key={t.id} onClick={async () => { await handleLoad(t); }}
-                                className="bg-white border-2 border-slate-200 hover:border-aida-teal rounded-xl overflow-hidden cursor-pointer transition-all group shadow-sm hover:shadow-md"
-                            >
-                                <div className="h-40 bg-slate-50 overflow-hidden pointer-events-none">
-                                    {(t.stepCount ?? 0) > 0 || (t.workflow?.steps?.length ?? 0) > 0 ? (
-                                        <WorkflowVisualizer data={t.workflow} editMode={false} connectorStyle="straight" />
-                                    ) : (
-                                        <div className="h-full flex items-center justify-center text-slate-300 text-xs">No preview</div>
-                                    )}
+                        {filtered.map((t: WorkflowTemplate) => {
+                            const full = fullTemplates[t.id];
+                            const displayWorkflow = full?.workflow ?? t.workflow;
+                            const hasSteps = (displayWorkflow?.steps?.length ?? 0) > 0;
+                            return (
+                                <div key={t.id} onClick={async () => {
+                                    const wf = full?.workflow ?? (await getTemplateById(t.id))?.workflow ?? t.workflow;
+                                    onLoadTemplate(wf);
+                                    onClose();
+                                }}
+                                    className="bg-white border-2 border-slate-200 hover:border-aida-teal rounded-xl overflow-hidden cursor-pointer transition-all group shadow-sm hover:shadow-md"
+                                >
+                                    <div className="h-40 bg-slate-50 overflow-hidden pointer-events-none">
+                                        {hasSteps ? (
+                                            <WorkflowVisualizer data={displayWorkflow} editMode={false} connectorStyle="straight" />
+                                        ) : (
+                                            <div className="h-full flex items-center justify-center text-slate-300 text-xs">
+                                                {full ? 'No steps' : 'Loading…'}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="px-3 py-2.5 border-t border-slate-100">
+                                        <p className="font-semibold text-sm text-slate-800 truncate">{t.name}</p>
+                                        {t.description && <p className="text-xs text-slate-400 truncate mt-0.5">{t.description}</p>}
+                                        <p className="text-xs text-aida-teal mt-1 opacity-0 group-hover:opacity-100 transition-opacity">Click to load →</p>
+                                    </div>
                                 </div>
-                                <div className="px-3 py-2.5 border-t border-slate-100">
-                                    <p className="font-semibold text-sm text-slate-800 truncate">{t.name}</p>
-                                    {t.description && <p className="text-xs text-slate-400 truncate mt-0.5">{t.description}</p>}
-                                    <p className="text-xs text-aida-teal mt-1 opacity-0 group-hover:opacity-100 transition-opacity">Click to load →</p>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </div>
